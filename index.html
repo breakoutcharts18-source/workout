@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Exercise Tier Guide — Jeff Nippard</title>
 <style>
   :root{
@@ -19,9 +20,10 @@
     --d:#5c6bc0;
     --f:#6b6f68;
   }
-  *{box-sizing:border-box;}
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
-    font-family:'Helvetica Neue',Arial,sans-serif;}
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    -webkit-text-size-adjust:100%;}
   h1,h2,h3{font-family:'Georgia',serif; letter-spacing:.02em;}
 
   .wrap{max-width:1100px;margin:0 auto;padding:28px 20px 80px;}
@@ -38,6 +40,7 @@
   header.top h1{font-size:32px; margin:0; font-weight:700;}
   header.top .sub{color:var(--ink-dim); font-size:13px; max-width:420px; text-align:right;}
 
+  /* Horizontally scrollable tab bar on small screens */
   nav.groups{
     display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px;
   }
@@ -45,7 +48,7 @@
     background:var(--panel); color:var(--ink-dim); border:1px solid var(--line);
     padding:9px 16px; font-size:13px; font-weight:600; cursor:pointer;
     border-radius:3px; letter-spacing:.03em; transition:all .15s ease;
-    font-family:inherit;
+    font-family:inherit; -webkit-appearance:none; appearance:none;
   }
   nav.groups button:hover{color:var(--ink); border-color:var(--accent);}
   nav.groups button.active{background:var(--accent); color:#1a1a14; border-color:var(--accent);}
@@ -103,9 +106,79 @@
   }
   footer a{color:var(--ink-dim);}
 
+  /* ---------------- Mobile-friendly adjustments ---------------- */
+
+  /* Tablet / small desktop */
+  @media (max-width:768px){
+    .wrap{padding:20px 14px 60px;}
+    header.top h1{font-size:26px;}
+    .card-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
+  }
+
+  /* Phones */
   @media (max-width:600px){
-    header.top{flex-direction:column; align-items:flex-start;}
-    header.top .sub{text-align:left;}
+    header.top{flex-direction:column; align-items:flex-start; padding-bottom:16px; margin-bottom:16px;}
+    header.top .sub{text-align:left; max-width:100%; font-size:12.5px;}
+    header.top h1{font-size:22px;}
+    header.top .eyebrow{font-size:10px;}
+
+    /* Sticky, horizontally-scrollable tab bar so all muscle groups
+       stay reachable with a thumb swipe instead of wrapping endlessly */
+    nav.groups{
+      flex-wrap:nowrap;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+      position:sticky; top:0; z-index:5;
+      background:var(--bg);
+      padding:8px 0 12px;
+      margin:0 -14px 18px;
+      padding-left:14px; padding-right:14px;
+      gap:8px;
+    }
+    nav.groups::-webkit-scrollbar{display:none;}
+    nav.groups button{
+      flex:0 0 auto;
+      padding:10px 16px;
+      font-size:13px;
+      white-space:nowrap;
+    }
+
+    .group-head{margin-bottom:14px;}
+    .group-head h2{font-size:20px;}
+    .group-head a{font-size:11.5px;}
+
+    .tier-label{font-size:13.5px; padding:8px 12px;}
+    .tier-label .count{font-size:10px;}
+
+    /* Denser but still comfortably tappable thumbnail grid */
+    .card-grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:1px;}
+    .card{padding:7px 7px 9px; gap:6px;}
+    .card .name{font-size:11px;}
+    .thumb .fallback svg{width:20px; height:20px;}
+    .thumb .fallback span{font-size:9px;}
+
+    footer{font-size:10.5px; margin-top:28px; padding-top:12px;}
+  }
+
+  /* Very small phones */
+  @media (max-width:380px){
+    .card-grid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));}
+    header.top h1{font-size:20px;}
+  }
+
+  /* Respect safe areas on notched devices */
+  @supports (padding: max(0px)){
+    .wrap{
+      padding-left:max(20px, env(safe-area-inset-left));
+      padding-right:max(20px, env(safe-area-inset-right));
+    }
+    @media (max-width:600px){
+      .wrap{
+        padding-left:max(14px, env(safe-area-inset-left));
+        padding-right:max(14px, env(safe-area-inset-right));
+      }
+    }
   }
 </style>
 </head>
@@ -195,6 +268,7 @@ groupNames.forEach((g, i)=>{
     document.querySelectorAll('.group-panel').forEach(p=>p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('panel-'+g).classList.add('active');
+    btn.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
   });
   nav.appendChild(btn);
 
