@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Exercise Tier Guide — Jeff Nippard</title>
+<style>
+  :root{
+    --bg:#111310;
+    --panel:#181b17;
+    --line:#2b2f2a;
+    --ink:#eee9de;
+    --ink-dim:#8b8f85;
+    --accent:#e8c14a;
+    --splus:#d1495b;
+    --s:#e07a3f;
+    --a:#e8c14a;
+    --b:#8fb84e;
+    --c:#4ea2b0;
+    --d:#5c6bc0;
+    --f:#6b6f68;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:'Helvetica Neue',Arial,sans-serif;}
+  h1,h2,h3{font-family:'Georgia',serif; letter-spacing:.02em;}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:28px 20px 80px;}
+
+  header.top{
+    border-bottom:2px solid var(--line);
+    padding-bottom:20px; margin-bottom:22px;
+    display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:10px;
+  }
+  header.top .eyebrow{
+    text-transform:uppercase; letter-spacing:.18em; font-size:11px; color:var(--accent);
+    font-weight:700; margin-bottom:6px;
+  }
+  header.top h1{font-size:32px; margin:0; font-weight:700;}
+  header.top .sub{color:var(--ink-dim); font-size:13px; max-width:420px; text-align:right;}
+
+  nav.groups{
+    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px;
+  }
+  nav.groups button{
+    background:var(--panel); color:var(--ink-dim); border:1px solid var(--line);
+    padding:9px 16px; font-size:13px; font-weight:600; cursor:pointer;
+    border-radius:3px; letter-spacing:.03em; transition:all .15s ease;
+    font-family:inherit;
+  }
+  nav.groups button:hover{color:var(--ink); border-color:var(--accent);}
+  nav.groups button.active{background:var(--accent); color:#1a1a14; border-color:var(--accent);}
+
+  .group-panel{display:none;}
+  .group-panel.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  .group-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:18px; flex-wrap:wrap; gap:8px;}
+  .group-head h2{font-size:24px; margin:0;}
+  .group-head a{color:var(--ink-dim); font-size:12px; text-decoration:none; border-bottom:1px dotted var(--ink-dim);}
+  .group-head a:hover{color:var(--accent); border-color:var(--accent);}
+
+  .tier-row{margin-bottom:14px; border:1px solid var(--line); border-radius:4px; overflow:hidden; background:var(--panel);}
+  .tier-label{
+    display:flex; align-items:center; gap:10px;
+    padding:8px 14px; font-weight:800; font-size:15px; color:#111;
+  }
+  .tier-label .count{font-weight:500; font-size:11px; opacity:.75; margin-left:auto;}
+
+  .tier-splus .tier-label{background:var(--splus); color:#fff;}
+  .tier-s .tier-label{background:var(--s); color:#1a1200;}
+  .tier-a .tier-label{background:var(--a); color:#1a1200;}
+  .tier-b .tier-label{background:var(--b); color:#0e1400;}
+  .tier-c .tier-label{background:var(--c); color:#031014;}
+  .tier-d .tier-label{background:var(--d); color:#f4f4ff;}
+  .tier-f .tier-label{background:var(--f); color:#fff;}
+
+  .card-grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    gap:1px; background:var(--line);
+  }
+  .card{
+    background:var(--panel); padding:10px 10px 12px; display:flex; flex-direction:column; gap:8px;
+  }
+  .thumb{
+    width:100%; aspect-ratio:1/1; background:#0d0f0c; border-radius:3px; overflow:hidden;
+    position:relative; border:1px solid var(--line);
+  }
+  .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+  .thumb .fallback{
+    width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px; color:var(--ink-dim); text-decoration:none; text-align:center; padding:8px;
+  }
+  .thumb .fallback svg{width:26px; height:26px; opacity:.6;}
+  .thumb .fallback span{font-size:10px; letter-spacing:.03em; text-transform:uppercase; font-weight:700;}
+  .thumb .fallback:hover{color:var(--accent);}
+  .thumb .fallback:hover svg{opacity:1;}
+
+  .card .name{font-size:12.5px; font-weight:600; line-height:1.25;}
+
+  footer{
+    margin-top:40px; padding-top:16px; border-top:1px solid var(--line);
+    color:var(--ink-dim); font-size:11px; line-height:1.6;
+  }
+  footer a{color:var(--ink-dim);}
+
+  @media (max-width:600px){
+    header.top{flex-direction:column; align-items:flex-start;}
+    header.top .sub{text-align:left;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Science-Based Ranking · Jeff Nippard</div>
+      <h1>Exercise Tier Guide</h1>
+    </div>
+    <div class="sub">Images cycle through the start/finish position of each lift. No photo? Tap the card to pull up a form-check video instead.</div>
+  </header>
+
+  <nav class="groups" id="nav"></nav>
+  <div id="panels"></div>
+
+  <footer>
+    Reference photos sourced from the free-exercise-db public dataset (closest available match per movement — a few are the nearest equivalent lift, not the exact named variation). Cards without a photo link out to a YouTube search for a form-check video. Rankings and tier placements come from Jeff Nippard's exercise-science video series, linked at the top of each muscle group.
+  </footer>
+</div>
+
+<script>
+const DATA = {"Chest": {"video": "https://www.youtube.com/watch?v=fGm-ef-4PVk", "tiers": {"S+": [["Machine Chest Press", "Machine_Bench_Press"]], "S": [["Seated Cable Pec Flye", "Cable_Crossover"]], "A": [["Bench Press", "Barbell_Bench_Press_-_Medium_Grip"], ["Incline Bench Press", "Barbell_Incline_Bench_Press_-_Medium_Grip"], ["Flat Dumbbell Press", "Dumbbell_Bench_Press"], ["Incline Dumbbell Press", "Incline_Dumbbell_Press"], ["Dips", "Dips_-_Chest_Version"], ["Deficit Pushups", "Decline_Push-Up"], ["Dumbbell Guillotine Press", "Barbell_Guillotine_Bench_Press"], ["Smith Machine Bench Press", "Smith_Machine_Bench_Press"], ["Incline Smith Machine Bench Press", "Smith_Machine_Incline_Bench_Press"], ["Cable Crossovers", "Cable_Crossover"], ["Pec Deck", null], ["Dumbbell Flye", "Dumbbell_Flyes"], ["Cable Press-around", null]], "B": [["Decline Bench Press", "Decline_Barbell_Bench_Press"], ["Decline Dumbbell Press", "Decline_Dumbbell_Bench_Press"], ["Banded Pushups", "Pushups"]], "C": [["Pushups", "Pushups"], ["Floor Press", "Floor_Press"]], "D": [["Dumbbell Pullover", "Bent-Arm_Dumbbell_Pullover"], ["Plyometric Pushups", "Plyo_Push-up"]], "F": [["Hex Press", null], ["Guillotine Press", "Barbell_Guillotine_Bench_Press"], ["1-Arm Dumbbell Press", "One_Arm_Dumbbell_Bench_Press"], ["Cross-body Standing Dumbbell Flye", null]], "F-": [["Plate Press", "Svend_Press"]]}}, "Back": {"video": "https://www.youtube.com/watch?v=jLvqKgW-_G8", "tiers": {"S": [["Widegrip Lat Pulldown", "Wide-Grip_Lat_Pulldown"], ["Neutral Grip Lat Pulldown", null], ["One Arm Lat Pulldown", "One_Arm_Lat_Pulldown"], ["Meadows Row", null], ["Chest Supported Rows", "Seated_Cable_Rows"], ["Cable Rows", "Seated_Cable_Rows"], ["Wide Grip Cable Row", null]], "A": [["Wide Grip Pull Ups", "Wide-Grip_Rear_Pull-Up"], ["Neutral Grip Pull Ups", null], ["Cross Body One Arm Lat Pulldown", "One_Arm_Lat_Pulldown"], ["Deficit Pendlay Row", "Bent_Over_Barbell_Row"], ["One Arm DB Row", "One-Arm_Dumbbell_Row"], ["Kroc Row", "Shotgun_Row"], ["Cable Lat Prayers", null], ["DB Pullovers", "Bent-Arm_Dumbbell_Pullover"]], "B": [["Chin Ups", "Chin-Up"], ["BB Row", "Bent_Over_Barbell_Row"], ["Pendlay Row", "Bent_Over_Barbell_Row"], ["Rope Face Pull", "Face_Pull"]], "C": [["Deadlift", "Barbell_Deadlift"], ["Yates Row", "Bent_Over_Barbell_Row"], ["Inverted Row", "Inverted_Row"], ["Free Standing T-Bar Row", "T-Bar_Row_with_Handle"]], "D": [["Above the Knee Rack Pull", "Rack_Pulls"]], "F": [["Renegade Rows", "Alternating_Renegade_Row"], ["DB Row Curl", null], ["DB Row Press", null], ["DB Row Kickback", null]]}}, "Shoulders": {"video": "https://www.youtube.com/watch?v=SgyUoY0IZ7A", "tiers": {"S": [["Cable Lat Raise", "Cable_Seated_Lateral_Raise"], ["Cable 'Y' Raise", null], ["Behind the Back Cuffed Cable Lat Raise", null], ["Reverse Pec Deck", "Reverse_Machine_Flyes"], ["Reverse Cable Crossover", "Cable_Crossover"]], "A+": [["Machine Shoulder Press", "Machine_Shoulder_Military_Press"], ["Atlantis Standing Machine Lat Raise", null]], "A": [["Lean-in DB Lat Raises", "Side_Lateral_Raise"], ["Rope Face Pulls", "Face_Pull"], ["Seated DB Overhead Press", "Seated_Dumbbell_Press"], ["'Arnold Style' Side lying DB raises", "Lying_One-Arm_Lateral_Raise"]], "B+": [["Standing BB Overhead Press", "Standing_Military_Press"]], "B": [["Standing DB Lat Raise", "Side_Lateral_Raise"], ["Bent over reverse DB Flye", "Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench"], ["Seated machine lat raise", "Seated_Side_Lateral_Raise"], ["Lean-away DB Lat Raise", "Side_Lateral_Raise"], ["Super ROM DB lat raise", "Side_Lateral_Raise"], ["Seated BB overhead press", "Seated_Barbell_Military_Press"], ["Upright rows", "Upright_Barbell_Row"]], "C": [["Banded Lat raise", "Lateral_Raise_-_With_Bands"]], "D": [["Front raises (of any kind)", "Front_Dumbbell_Raise"]]}}, "Quads": {"video": "https://www.youtube.com/watch?v=kIXcoivzGf8", "tiers": {"S+": [["Hack Squat", "Barbell_Hack_Squat"]], "S": [["Barbell Back Squat", "Barbell_Squat"], ["Pendulum Squat", null], ["Smith Machine Squat", "Smith_Machine_Squat"], ["Bulgarian Split Squat", "Barbell_Side_Split_Squat"]], "A": [["Barbell Front Squat", "Front_Barbell_Squat"], ["Low-Bar Squat", "Barbell_Squat"], ["45 Degree Leg Press", "Leg_Press"], ["Leg Extension", "Leg_Extensions"], ["Reverse Nordic", null]], "B": [["Lunge", "Barbell_Lunge"], ["Goblet Squat", "Goblet_Squat"], ["Sissy Squat", "Weighted_Sissy_Squat"]], "C": [["Horizontal Leg Press", "Leg_Press"], ["Deadlift", "Barbell_Deadlift"], ["Step Ups", "Barbell_Step_Ups"], ["Pistol Squat", "Kettlebell_Pistol_Squat"]], "F": [["Combo Squat Exercises (Jump Squat)", "Freehand_Jump_Squat"]], "F-": [["Bosu Ball Squat", null]]}}, "Glutes": {"video": "https://youtu.be/3ryh7PNhz3E", "tiers": {"S": [["Walking Lunges", "Barbell_Walking_Lunge"], ["Machine Hip Abduction", "Cable_Hip_Adduction"], ["45-Degree Back Extension", "Hyperextensions_Back_Extensions"], ["Smith Machine Lunge (Front Foot Elevated)", null]], "A": [["Machine Hip Thrust", "Barbell_Hip_Thrust"], ["Single-Leg Dumbbell Hip Thrust", "Barbell_Hip_Thrust"], ["Barbell Back Squat", "Barbell_Squat"], ["Smith Machine Squat", "Smith_Machine_Squat"], ["Bulgarian Split Squat", "Barbell_Side_Split_Squat"], ["Kickbacks", "Glute_Kickback"], ["Step Ups", "Barbell_Step_Ups"], ["Smith Machine Lunge", null], ["Romanian Deadlift", "Romanian_Deadlift"]], "B": [["Barbell Hip Thrust", "Barbell_Hip_Thrust"], ["Glute Bridge", "Barbell_Glute_Bridge"], ["Cable Hip Abduction", "Cable_Hip_Adduction"], ["Curtsy Lunge", "Barbell_Lunge"], ["Deadlift (Conventional)", "Barbell_Deadlift"], ["Sumo Deadlift", "Sumo_Deadlift"], ["Cable Pull Through", "Pull_Through"]], "C": [["Frog Pumps", "Frog_Hops"], ["Lateral Banded Walk", null]], "D": [["Donkey Kicks", null], ["Fire Hydrants", null], ["Kettlebell Swing", "One-Arm_Kettlebell_Swings"]]}}, "Triceps": {"video": "https://www.youtube.com/watch?v=OpRMRhr0Ycc", "tiers": {"S+": [["Overhead Cable Triceps Extension (Bar)", "Cable_Rope_Overhead_Triceps_Extension"]], "S": [["Barbell Skullcrusher", "Lying_Close-Grip_Barbell_Triceps_Extension_Behind_The_Head"]], "A": [["Triceps Pressdown (Bar)", "Triceps_Pushdown"], ["Overhead Cable Triceps Extension (Rope)", "Cable_Rope_Overhead_Triceps_Extension"], ["Katana Cable Triceps Extension", null], ["1 Arm Dumbbell Overhead Extension", "Standing_One-Arm_Dumbbell_Triceps_Extension"], ["Dumbbell Skullcrusher", "Lying_Triceps_Press"], ["Smith Machine JM Press", "JM_Press"], ["Cable Triceps Kickback", "One-Legged_Cable_Kickback"], ["Close-Grip Bench Press", "Close-Grip_Barbell_Bench_Press"]], "B": [["Triceps Pressdown (Rope)", "Triceps_Pushdown_-_Rope_Attachment"], ["Dumbbell French Press", "Seated_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension"], ["JM Press", "JM_Press"], ["Close-Grip Dips", "Dips_-_Triceps_Version"], ["Machine Dips", "Dip_Machine"], ["Diamond Pushups", "Pushups"]], "C": [["Reverse Grip Triceps Pressdown (Bar)", "Reverse_Grip_Triceps_Pushdown"], ["Bench Dips", "Bench_Dips"], ["Close-Grip Pushups", "Push-Ups_-_Close_Triceps_Position"]], "C-": [["Dumbbell Triceps Kickback", "Tricep_Dumbbell_Kickback"]]}}, "Biceps": {"video": "https://www.youtube.com/watch?v=GNO4OtYoCYk", "tiers": {"S+": [["Face Away Bayesian Curl", null]], "S": [["Dumbbell Preacher Curl", "One_Arm_Dumbbell_Preacher_Curl"], ["Machine Preacher Curl", "Machine_Preacher_Curls"], ["Preacher Hammer Curl", "Preacher_Hammer_Dumbbell_Curl"]], "A": [["EZ Bar Curl", "EZ-Bar_Curl"], ["Standing Dumbbell Curl", "Dumbbell_Alternate_Bicep_Curl"], ["Incline Curl", "Alternate_Incline_Dumbbell_Curl"], ["Lying Dumbbell Curl", "Lying_Supine_Dumbbell_Curl"], ["Modified 21s", null], ["Standing Cable Curl", "Standing_Biceps_Cable_Curl"], ["Bayesian Cable Curl Variation", "Cable_Preacher_Curl"], ["Cheat Curl", "Barbell_Curl"], ["Strict Curl", "Barbell_Curl"], ["Hammer Curl", "Hammer_Curls"], ["Inverse Zottman Curl", "Zottman_Curl"]], "B": [["Barbell Curl", "Barbell_Curl"], ["Flat Bench Curl", null], ["Chin-Ups", "Chin-Up"]], "C": [["Scott Curl", "Preacher_Curl"], ["Drag Curl", "Drag_Curl"], ["Spider Curl", "Spider_Curl"], ["21s", null]]}}};
+
+const TIER_CLASS = {"S+":"tier-splus","S":"tier-s","A+":"tier-a","A":"tier-a","B+":"tier-b","B":"tier-b","C":"tier-c","C-":"tier-c","D":"tier-d","F":"tier-f","F-":"tier-f"};
+const IMG_BASE = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
+
+function ytSearch(name){
+  return "https://www.youtube.com/results?search_query=" + encodeURIComponent(name + " exercise form");
+}
+
+function fallbackSVG(){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8v8M20 8v8M2 12h2M20 12h2M7 12h10" stroke-linecap="round"/></svg>';
+}
+
+function buildCard(name, id){
+  const card = document.createElement('div');
+  card.className = 'card';
+  const thumb = document.createElement('div');
+  thumb.className = 'thumb';
+
+  if(id){
+    const img = document.createElement('img');
+    img.src = IMG_BASE + id + "/0.jpg";
+    img.alt = name;
+    img.loading = "lazy";
+    let frame = 0;
+    img.addEventListener('error', ()=>{ thumb.innerHTML=''; thumb.appendChild(fallbackLink(name)); });
+    thumb.appendChild(img);
+    setInterval(()=>{
+      frame = frame ? 0 : 1;
+      img.src = IMG_BASE + id + "/" + frame + ".jpg";
+    }, 900);
+  } else {
+    thumb.appendChild(fallbackLink(name));
+  }
+
+  const label = document.createElement('div');
+  label.className = 'name';
+  label.textContent = name;
+
+  card.appendChild(thumb);
+  card.appendChild(label);
+  return card;
+}
+
+function fallbackLink(name){
+  const a = document.createElement('a');
+  a.className = 'fallback';
+  a.href = ytSearch(name);
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.innerHTML = fallbackSVG() + '<span>Watch form</span>';
+  return a;
+}
+
+const nav = document.getElementById('nav');
+const panels = document.getElementById('panels');
+const groupNames = Object.keys(DATA);
+
+groupNames.forEach((g, i)=>{
+  const btn = document.createElement('button');
+  btn.textContent = g;
+  if(i===0) btn.classList.add('active');
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav.groups button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.group-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+g).classList.add('active');
+  });
+  nav.appendChild(btn);
+
+  const panel = document.createElement('div');
+  panel.className = 'group-panel' + (i===0 ? ' active':'');
+  panel.id = 'panel-'+g;
+
+  const head = document.createElement('div');
+  head.className = 'group-head';
+  head.innerHTML = `<h2>${g}</h2><a href="${DATA[g].video}" target="_blank" rel="noopener">Watch Nippard's ${g} breakdown &rarr;</a>`;
+  panel.appendChild(head);
+
+  Object.entries(DATA[g].tiers).forEach(([tier, exs])=>{
+    if(exs.length === 0) return;
+    const row = document.createElement('div');
+    row.className = 'tier-row ' + (TIER_CLASS[tier]||'tier-b');
+
+    const tl = document.createElement('div');
+    tl.className = 'tier-label';
+    tl.innerHTML = `<span>${tier} Tier</span><span class="count">${exs.length} exercise${exs.length>1?'s':''}</span>`;
+    row.appendChild(tl);
+
+    const grid = document.createElement('div');
+    grid.className = 'card-grid';
+    exs.forEach(([name, id])=> grid.appendChild(buildCard(name, id)));
+    row.appendChild(grid);
+
+    panel.appendChild(row);
+  });
+
+  panels.appendChild(panel);
+});
+</script>
+</body>
+</html>
