@@ -141,9 +141,6 @@ function fallbackSVG(){
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8v8M20 8v8M2 12h2M20 12h2M7 12h10" stroke-linecap="round"/></svg>';
 }
 
-// Track animator intervals per group so only the visible tab is ever animating
-const groupIntervals = {};
-
 function buildCard(name, id){
   const card = document.createElement('div');
   card.className = 'card';
@@ -152,41 +149,16 @@ function buildCard(name, id){
 
   if(id){
     const img = document.createElement('img');
+    img.src = IMG_BASE + id + "/0.jpg";
     img.alt = name;
     img.loading = "lazy";
-    thumb.appendChild(img);
-
-    // Preload both frames once, then just flip between cached URLs —
-    // avoids re-hitting GitHub's raw content server on every animation tick.
-    const urls = [IMG_BASE + id + "/0.jpg", IMG_BASE + id + "/1.jpg"];
-    const frames = [null, null];
-    let loadedCount = 0;
-    let failed = false;
-
-    urls.forEach((url, i)=>{
-      const pre = new Image();
-      pre.onload = ()=>{
-        frames[i] = url;
-        loadedCount++;
-        if(i === 0) img.src = url; // show first frame as soon as it's ready
-      };
-      pre.onerror = ()=>{
-        if(!failed){
-          failed = true;
-          thumb.innerHTML = '';
-          thumb.appendChild(fallbackLink(name));
-        }
-      };
-      pre.src = url;
-    });
-
     let frame = 0;
-    card.dataset_animate = function(){
-      if(failed || loadedCount < 2) return;
+    img.addEventListener('error', ()=>{ thumb.innerHTML=''; thumb.appendChild(fallbackLink(name)); });
+    thumb.appendChild(img);
+    setInterval(()=>{
       frame = frame ? 0 : 1;
-      img.src = frames[frame];
-    };
-    card._animate = card.dataset_animate;
+      img.src = IMG_BASE + id + "/" + frame + ".jpg";
+    }, 900);
   } else {
     thumb.appendChild(fallbackLink(name));
   }
@@ -198,22 +170,6 @@ function buildCard(name, id){
   card.appendChild(thumb);
   card.appendChild(label);
   return card;
-}
-
-function startAnimating(groupName, panel){
-  stopAnimating(groupName);
-  groupIntervals[groupName] = setInterval(()=>{
-    panel.querySelectorAll('.card').forEach(card=>{
-      if(typeof card._animate === 'function') card._animate();
-    });
-  }, 900);
-}
-
-function stopAnimating(groupName){
-  if(groupIntervals[groupName]){
-    clearInterval(groupIntervals[groupName]);
-    delete groupIntervals[groupName];
-  }
 }
 
 function fallbackLink(name){
@@ -237,11 +193,8 @@ groupNames.forEach((g, i)=>{
   btn.addEventListener('click', ()=>{
     document.querySelectorAll('nav.groups button').forEach(b=>b.classList.remove('active'));
     document.querySelectorAll('.group-panel').forEach(p=>p.classList.remove('active'));
-    groupNames.forEach(stopAnimating);
     btn.classList.add('active');
-    const activePanel = document.getElementById('panel-'+g);
-    activePanel.classList.add('active');
-    startAnimating(g, activePanel);
+    document.getElementById('panel-'+g).classList.add('active');
   });
   nav.appendChild(btn);
 
@@ -274,9 +227,6 @@ groupNames.forEach((g, i)=>{
 
   panels.appendChild(panel);
 });
-
-// Kick off animation for the first tab, shown by default
-startAnimating(groupNames[0], document.getElementById('panel-'+groupNames[0]));
 </script>
 </body>
 </html>
