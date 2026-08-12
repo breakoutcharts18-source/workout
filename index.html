@@ -5,280 +5,443 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Exercise Tier Guide — Jeff Nippard</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
   :root{
-    --bg:#111310;
-    --panel:#181b17;
-    --line:#2b2f2a;
-    --ink:#eee9de;
-    --ink-dim:#8b8f85;
-    --accent:#e8c14a;
-    --splus:#d1495b;
-    --s:#e07a3f;
-    --a:#e8c14a;
-    --b:#8fb84e;
-    --c:#4ea2b0;
-    --d:#5c6bc0;
-    --f:#6b6f68;
+    --void:#0c1013;
+    --panel:#12171b;
+    --panel-raised:#161c21;
+    --line:#232b30;
+    --line-bright:#313b41;
+    --ink:#dde5e8;
+    --ink-dim:#6c7a80;
+    --ink-faint:#3f4a4f;
+    --blue:#5cc8ff;
+    --blue-dim:#2a5568;
+    --amber:#ffb454;
+
+    --splus:#ff5c5c;
+    --s:#ff8c42;
+    --a:#ffb454;
+    --b:#5cc8ff;
+    --c:#4a8fb0;
+    --d:#5c7080;
+    --f:#3f4a4f;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
-    font-family:'Helvetica Neue',Arial,sans-serif;
+  html,body{margin:0;padding:0;background:var(--void);color:var(--ink);
+    font-family:'Inter',Arial,sans-serif;
     -webkit-text-size-adjust:100%;}
-  h1,h2,h3{font-family:'Georgia',serif; letter-spacing:.02em;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
 
-  .wrap{max-width:1100px;margin:0 auto;padding:28px 20px 80px;}
+  body{
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:32px 32px;
+    background-position:-1px -1px;
+    background-attachment:fixed;
+  }
+  body::before{
+    content:'';
+    position:fixed; inset:0; pointer-events:none; z-index:50;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 1px, transparent 1px, transparent 3px);
+    opacity:.35;
+  }
+
+  .wrap{max-width:1120px;margin:0 auto;padding:24px 20px 90px; position:relative;}
 
   header.top{
-    border-bottom:2px solid var(--line);
-    padding-bottom:20px; margin-bottom:22px;
-    display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:10px;
+    border:1px solid var(--line-bright);
+    background:var(--panel);
+    padding:18px 20px;
+    margin-bottom:20px;
+    display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:14px;
+    position:relative;
   }
-  header.top .eyebrow{
-    text-transform:uppercase; letter-spacing:.18em; font-size:11px; color:var(--accent);
-    font-weight:700; margin-bottom:6px;
+  header.top::before, header.top::after,
+  .group-head::before,
+  .thumb.bracketed::before{
+    content:''; position:absolute; width:10px; height:10px;
+    border-color:var(--blue); border-style:solid; opacity:.8;
   }
-  header.top h1{font-size:32px; margin:0; font-weight:700;}
-  header.top .sub{color:var(--ink-dim); font-size:13px; max-width:420px; text-align:right;}
+  header.top::before{top:-1px; left:-1px; border-width:2px 0 0 2px;}
+  header.top::after{bottom:-1px; right:-1px; border-width:0 2px 2px 0;}
 
-  /* Horizontally scrollable tab bar on small screens */
-  nav.groups{
-    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px;
+  header.top .eyebrow{
+    text-transform:uppercase; letter-spacing:.16em; font-size:10.5px; color:var(--blue);
+    font-weight:600; margin-bottom:8px; display:flex; align-items:center; gap:8px;
   }
+  header.top .eyebrow .dot{
+    width:6px; height:6px; border-radius:50%; background:var(--blue);
+    box-shadow:0 0 8px var(--blue);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.3;}}
+  header.top h1{
+    font-family:'IBM Plex Mono',monospace; font-size:26px; margin:0; font-weight:700;
+    letter-spacing:-.01em;
+  }
+  header.top .sub{color:var(--ink-dim); font-size:12.5px; max-width:380px; text-align:right; line-height:1.5;}
+
+  nav.groups{
+    display:flex; gap:6px; margin-bottom:24px; flex-wrap:nowrap; overflow-x:auto;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:2px;
+  }
+  nav.groups::-webkit-scrollbar{display:none;}
   nav.groups button{
     background:var(--panel); color:var(--ink-dim); border:1px solid var(--line);
-    padding:9px 16px; font-size:13px; font-weight:600; cursor:pointer;
-    border-radius:3px; letter-spacing:.03em; transition:all .15s ease;
-    font-family:inherit; -webkit-appearance:none; appearance:none;
+    padding:9px 14px; font-size:11.5px; font-weight:600; cursor:pointer;
+    font-family:'IBM Plex Mono',monospace; letter-spacing:.04em; text-transform:uppercase;
+    transition:all .15s ease; flex:0 0 auto; position:relative;
   }
-  nav.groups button:hover{color:var(--ink); border-color:var(--accent);}
-  nav.groups button.active{background:var(--accent); color:#1a1a14; border-color:var(--accent);}
+  nav.groups button::before{content:'['; margin-right:3px; opacity:.5;}
+  nav.groups button::after{content:']'; margin-left:3px; opacity:.5;}
+  nav.groups button:hover{color:var(--ink); border-color:var(--blue-dim);}
+  nav.groups button[aria-selected="true"]{
+    background:var(--blue); color:#04141c; border-color:var(--blue);
+  }
+  nav.groups button[aria-selected="true"]::before,
+  nav.groups button[aria-selected="true"]::after{opacity:.7;}
 
   .group-panel{display:none;}
-  .group-panel.active{display:block; animation:fade .25s ease;}
-  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
-
-  .group-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:18px; flex-wrap:wrap; gap:8px;}
-  .group-head h2{font-size:24px; margin:0;}
-  .group-head a{color:var(--ink-dim); font-size:12px; text-decoration:none; border-bottom:1px dotted var(--ink-dim);}
-  .group-head a:hover{color:var(--accent); border-color:var(--accent);}
-
-  .tier-row{margin-bottom:14px; border:1px solid var(--line); border-radius:4px; overflow:hidden; background:var(--panel);}
-  .tier-label{
-    display:flex; align-items:center; gap:10px;
-    padding:8px 14px; font-weight:800; font-size:15px; color:#111;
+  .group-panel.active{display:block; animation:sweep .4s ease;}
+  @keyframes sweep{
+    from{opacity:0; clip-path:inset(0 100% 0 0);}
+    to{opacity:1; clip-path:inset(0 0 0 0);}
   }
-  .tier-label .count{font-weight:500; font-size:11px; opacity:.75; margin-left:auto;}
+  @media (prefers-reduced-motion: reduce){
+    .group-panel.active{animation:none;}
+    header.top .eyebrow .dot{animation:none;}
+  }
 
-  .tier-splus .tier-label{background:var(--splus); color:#fff;}
-  .tier-s .tier-label{background:var(--s); color:#1a1200;}
-  .tier-a .tier-label{background:var(--a); color:#1a1200;}
-  .tier-b .tier-label{background:var(--b); color:#0e1400;}
-  .tier-c .tier-label{background:var(--c); color:#031014;}
-  .tier-d .tier-label{background:var(--d); color:#f4f4ff;}
-  .tier-f .tier-label{background:var(--f); color:#fff;}
+  .group-head{
+    display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px; flex-wrap:wrap; gap:8px;
+    padding-bottom:10px; border-bottom:1px solid var(--line);
+  }
+  .group-head h2{
+    font-family:'IBM Plex Mono',monospace; font-size:18px; margin:0; font-weight:600;
+    text-transform:uppercase; letter-spacing:.06em; color:var(--ink);
+  }
+  .group-head h2 .sys{color:var(--ink-faint); font-weight:400; margin-right:8px;}
+  .group-head a{
+    color:var(--blue); font-size:11px; text-decoration:none; font-family:'IBM Plex Mono',monospace;
+    letter-spacing:.02em; border:1px solid var(--blue-dim); padding:5px 10px;
+  }
+  .group-head a:hover{background:var(--blue); color:#04141c;}
+
+  .tier-row{margin-bottom:10px; border:1px solid var(--line); background:var(--panel); display:flex;}
+
+  .tier-gauge{
+    flex:0 0 46px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    border-right:1px solid var(--line); padding:10px 0; gap:6px; background:var(--panel-raised);
+  }
+  .tier-gauge .code{
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:14px; writing-mode:vertical-rl;
+    text-orientation:mixed; letter-spacing:.05em;
+  }
+  .tier-gauge .bar{
+    width:4px; height:56px; background:var(--line); position:relative; overflow:hidden;
+  }
+  .tier-gauge .bar i{
+    position:absolute; bottom:0; left:0; width:100%; display:block;
+  }
+
+  .tier-splus .code, .tier-splus .bar i{color:var(--splus); background:var(--splus);}
+  .tier-s .code, .tier-s .bar i{color:var(--s); background:var(--s);}
+  .tier-a .code, .tier-a .bar i{color:var(--a); background:var(--a);}
+  .tier-b .code, .tier-b .bar i{color:var(--b); background:var(--b);}
+  .tier-c .code, .tier-c .bar i{color:var(--c); background:var(--c);}
+  .tier-d .code, .tier-d .bar i{color:var(--d); background:var(--d);}
+  .tier-f .code, .tier-f .bar i{color:var(--f); background:var(--f);}
+
+  .tier-body{flex:1; min-width:0;}
+  .tier-label{
+    display:flex; align-items:center; gap:10px; padding:6px 12px;
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-dim);
+    text-transform:uppercase; letter-spacing:.08em; border-bottom:1px solid var(--line);
+  }
+  .tier-label .count{margin-left:auto; opacity:.7;}
 
   .card-grid{
     display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
     gap:1px; background:var(--line);
   }
-  .card{
-    background:var(--panel); padding:10px 10px 12px; display:flex; flex-direction:column; gap:8px;
-  }
-  .thumb{
-    width:100%; aspect-ratio:1/1; background:#0d0f0c; border-radius:3px; overflow:hidden;
-    position:relative; border:1px solid var(--line);
-  }
-  .thumb img{width:100%; height:100%; object-fit:cover; display:block;}
-  .thumb .fallback{
-    width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:6px; color:var(--ink-dim); text-decoration:none; text-align:center; padding:8px;
-  }
-  .thumb .fallback svg{width:26px; height:26px; opacity:.6;}
-  .thumb .fallback span{font-size:10px; letter-spacing:.03em; text-transform:uppercase; font-weight:700;}
-  .thumb .fallback:hover{color:var(--accent);}
-  .thumb .fallback:hover svg{opacity:1;}
+  .card{background:var(--panel); padding:9px 9px 11px; display:flex; flex-direction:column; gap:7px;}
 
-  .card .name{font-size:12.5px; font-weight:600; line-height:1.25;}
+  .thumb{
+    width:100%; aspect-ratio:1/1; background:#080a0c; overflow:hidden; position:relative;
+    border:1px solid var(--line);
+  }
+  .thumb.bracketed::before{
+    top:4px; left:4px; border-width:2px 0 0 2px; opacity:0; transition:opacity .15s ease; z-index:2;
+  }
+  .card:hover .thumb.bracketed::before, .card:focus-visible .thumb.bracketed::before{opacity:.9;}
+
+  .thumb .frame{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;
+    filter:saturate(.85) contrast(1.05); opacity:0; animation:gifLoop 1.8s ease-in-out infinite;
+  }
+  .thumb .frame.f0{animation-delay:0s;}
+  .thumb .frame.f1{animation-delay:.9s;}
+  @keyframes gifLoop{0%,42%{opacity:1;} 50%,92%{opacity:0;} 100%{opacity:1;}}
+  @media (prefers-reduced-motion: reduce){
+    .thumb .frame{animation:none; opacity:0;}
+    .thumb .frame.f0{opacity:1;}
+  }
+
+  .thumb .placeholder{
+    width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px; color:var(--ink-faint); text-align:center; padding:8px;
+  }
+  .thumb .placeholder svg{width:22px; height:22px; opacity:.6;}
+  .thumb .placeholder span{font-size:8.5px; letter-spacing:.05em; text-transform:uppercase; font-weight:600; font-family:'IBM Plex Mono',monospace;}
+
+  .card{cursor:pointer; transition:transform .12s ease;}
+  .card:hover{background:var(--panel-raised);}
+  .card:hover .placeholder{color:var(--blue);}
+  .card:hover .placeholder svg{opacity:1;}
+
+  .card .name{font-size:12px; font-weight:500; line-height:1.3; color:var(--ink);}
+
+  /* ---------------- Modal ---------------- */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(6,8,10,.82); backdrop-filter:blur(3px);
+    display:flex; align-items:center; justify-content:center; padding:20px; z-index:100;
+  }
+  .modal-backdrop[hidden]{display:none;}
+  .modal{
+    background:var(--panel); border:1px solid var(--line-bright); max-width:480px; width:100%;
+    max-height:86vh; overflow-y:auto; position:relative; padding:0;
+  }
+  .modal-media{width:100%; aspect-ratio:16/10; background:#080a0c; position:relative; overflow:hidden; border-bottom:1px solid var(--line);}
+  .modal-media .frame{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:saturate(.85) contrast(1.05); opacity:0; animation:gifLoop 1.8s ease-in-out infinite;}
+  .modal-media .frame.f0{animation-delay:0s;}
+  .modal-media .frame.f1{animation-delay:.9s;}
+  @media (prefers-reduced-motion: reduce){
+    .modal-media .frame{animation:none; opacity:0;}
+    .modal-media .frame.f0{opacity:1;}
+  }
+  .modal-body{padding:18px 20px 22px;}
+  .modal-close{
+    position:absolute; top:10px; right:10px; z-index:3; width:30px; height:30px;
+    background:var(--void); border:1px solid var(--line-bright); color:var(--ink);
+    font-size:16px; line-height:1; cursor:pointer; font-family:'IBM Plex Mono',monospace;
+  }
+  .modal-close:hover{border-color:var(--blue); color:var(--blue);}
+  .modal h3{
+    font-family:'IBM Plex Mono',monospace; font-size:17px; margin:0 0 4px; text-transform:uppercase; letter-spacing:.03em;
+  }
+  .modal .modal-eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--blue); letter-spacing:.1em;
+    text-transform:uppercase; margin-bottom:12px; display:block;
+  }
+  .modal ol{margin:0 0 16px; padding-left:20px; color:var(--ink); font-size:13.5px; line-height:1.6;}
+  .modal ol li{margin-bottom:8px;}
+  .modal .modal-noinfo{color:var(--ink-dim); font-size:13px; line-height:1.6; margin:0 0 16px;}
+  .modal-yt{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--blue); color:#04141c; text-decoration:none; font-weight:700;
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:.04em; text-transform:uppercase;
+    padding:12px; border:1px solid var(--blue);
+  }
+  .modal-yt:hover{background:transparent; color:var(--blue);}
 
   footer{
-    margin-top:40px; padding-top:16px; border-top:1px solid var(--line);
-    color:var(--ink-dim); font-size:11px; line-height:1.6;
+    margin-top:36px; padding:14px 16px; border:1px solid var(--line); background:var(--panel);
+    color:var(--ink-dim); font-size:10.5px; line-height:1.6; font-family:'IBM Plex Mono',monospace;
   }
-  footer a{color:var(--ink-dim);}
+  footer a{color:var(--blue);}
 
-  /* ---------------- Mobile-friendly adjustments ---------------- */
-
-  /* Tablet / small desktop */
-  @media (max-width:768px){
-    .wrap{padding:20px 14px 60px;}
-    header.top h1{font-size:26px;}
-    .card-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));}
-  }
-
-  /* Phones */
   @media (max-width:600px){
-    header.top{flex-direction:column; align-items:flex-start; padding-bottom:16px; margin-bottom:16px;}
-    header.top .sub{text-align:left; max-width:100%; font-size:12.5px;}
-    header.top h1{font-size:22px;}
-    header.top .eyebrow{font-size:10px;}
-
-    /* Sticky, horizontally-scrollable tab bar so all muscle groups
-       stay reachable with a thumb swipe instead of wrapping endlessly */
-    nav.groups{
-      flex-wrap:nowrap;
-      overflow-x:auto;
-      -webkit-overflow-scrolling:touch;
-      scrollbar-width:none;
-      position:sticky; top:0; z-index:5;
-      background:var(--bg);
-      padding:8px 0 12px;
-      margin:0 -14px 18px;
-      padding-left:14px; padding-right:14px;
-      gap:8px;
-    }
-    nav.groups::-webkit-scrollbar{display:none;}
-    nav.groups button{
-      flex:0 0 auto;
-      padding:10px 16px;
-      font-size:13px;
-      white-space:nowrap;
-    }
-
-    .group-head{margin-bottom:14px;}
-    .group-head h2{font-size:20px;}
-    .group-head a{font-size:11.5px;}
-
-    .tier-label{font-size:13.5px; padding:8px 12px;}
-    .tier-label .count{font-size:10px;}
-
-    /* Denser but still comfortably tappable thumbnail grid */
-    .card-grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:1px;}
-    .card{padding:7px 7px 9px; gap:6px;}
-    .card .name{font-size:11px;}
-    .thumb .fallback svg{width:20px; height:20px;}
-    .thumb .fallback span{font-size:9px;}
-
-    footer{font-size:10.5px; margin-top:28px; padding-top:12px;}
-  }
-
-  /* Very small phones */
-  @media (max-width:380px){
-    .card-grid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));}
+    header.top{flex-direction:column; align-items:flex-start; padding:14px 16px;}
+    header.top .sub{text-align:left; max-width:100%; font-size:11.5px;}
     header.top h1{font-size:20px;}
+    nav.groups{position:sticky; top:0; z-index:5; background:var(--void); padding:8px 0 10px; margin:0 -16px 18px; padding-left:16px; padding-right:16px;}
+    .card-grid{grid-template-columns:repeat(auto-fill,minmax(94px,1fr));}
+    .tier-gauge{flex-basis:36px;}
+    .tier-gauge .code{font-size:12px;}
+    .tier-gauge .bar{height:44px;}
   }
 
-  /* Respect safe areas on notched devices */
-  @supports (padding: max(0px)){
-    .wrap{
-      padding-left:max(20px, env(safe-area-inset-left));
-      padding-right:max(20px, env(safe-area-inset-right));
-    }
-    @media (max-width:600px){
-      .wrap{
-        padding-left:max(14px, env(safe-area-inset-left));
-        padding-right:max(14px, env(safe-area-inset-right));
-      }
-    }
-  }
+  :focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div>
-      <div class="eyebrow">Science-Based Ranking · Jeff Nippard</div>
-      <h1>Exercise Tier Guide</h1>
+      <div class="eyebrow"><span class="dot"></span>Science-Based Ranking · Jeff Nippard</div>
+      <h1>EXERCISE_TIER_GUIDE</h1>
     </div>
-    <div class="sub">Images cycle through the start/finish position of each lift. No photo? Tap the card to pull up a form-check video instead.</div>
+    <div class="sub">Images cycle start/finish position per lift. No photo on file → tap for a form-check reference.</div>
   </header>
 
-  <nav class="groups" id="nav"></nav>
+  <nav class="groups" id="nav" role="tablist" aria-label="Muscle groups"></nav>
   <div id="panels"></div>
 
   <footer>
-    Reference photos sourced from the free-exercise-db public dataset (closest available match per movement — a few are the nearest equivalent lift, not the exact named variation). Cards without a photo link out to a YouTube search for a form-check video. Rankings and tier placements come from Jeff Nippard's exercise-science video series, linked at the top of each muscle group.
+    // Reference photos: free-exercise-db public dataset (closest available match — a few are nearest-equivalent lifts, not the exact named variation).
+    Tap any card for a written form breakdown and a video link. Rankings sourced from Jeff Nippard's exercise-science series, linked per group.
   </footer>
+</div>
+
+<div class="modal-backdrop" id="modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    <div class="modal-media" id="modal-media"></div>
+    <div class="modal-body">
+      <span class="modal-eyebrow">Form breakdown</span>
+      <h3 id="modal-title"></h3>
+      <ol id="modal-steps"></ol>
+      <p class="modal-noinfo" id="modal-noinfo">No written breakdown on file for this exact variation — the video below covers proper form.</p>
+      <a class="modal-yt" id="modal-yt" target="_blank" rel="noopener">▶ Watch form check on YouTube</a>
+    </div>
+  </div>
 </div>
 
 <script>
 const DATA = {"Chest": {"video": "https://www.youtube.com/watch?v=fGm-ef-4PVk", "tiers": {"S+": [["Machine Chest Press", "Machine_Bench_Press"]], "S": [["Seated Cable Pec Flye", "Cable_Crossover"]], "A": [["Bench Press", "Barbell_Bench_Press_-_Medium_Grip"], ["Incline Bench Press", "Barbell_Incline_Bench_Press_-_Medium_Grip"], ["Flat Dumbbell Press", "Dumbbell_Bench_Press"], ["Incline Dumbbell Press", "Incline_Dumbbell_Press"], ["Dips", "Dips_-_Chest_Version"], ["Deficit Pushups", "Decline_Push-Up"], ["Dumbbell Guillotine Press", "Barbell_Guillotine_Bench_Press"], ["Smith Machine Bench Press", "Smith_Machine_Bench_Press"], ["Incline Smith Machine Bench Press", "Smith_Machine_Incline_Bench_Press"], ["Cable Crossovers", "Cable_Crossover"], ["Pec Deck", null], ["Dumbbell Flye", "Dumbbell_Flyes"], ["Cable Press-around", null]], "B": [["Decline Bench Press", "Decline_Barbell_Bench_Press"], ["Decline Dumbbell Press", "Decline_Dumbbell_Bench_Press"], ["Banded Pushups", "Pushups"]], "C": [["Pushups", "Pushups"], ["Floor Press", "Floor_Press"]], "D": [["Dumbbell Pullover", "Bent-Arm_Dumbbell_Pullover"], ["Plyometric Pushups", "Plyo_Push-up"]], "F": [["Hex Press", null], ["Guillotine Press", "Barbell_Guillotine_Bench_Press"], ["1-Arm Dumbbell Press", "One_Arm_Dumbbell_Bench_Press"], ["Cross-body Standing Dumbbell Flye", null]], "F-": [["Plate Press", "Svend_Press"]]}}, "Back": {"video": "https://www.youtube.com/watch?v=jLvqKgW-_G8", "tiers": {"S": [["Widegrip Lat Pulldown", "Wide-Grip_Lat_Pulldown"], ["Neutral Grip Lat Pulldown", null], ["One Arm Lat Pulldown", "One_Arm_Lat_Pulldown"], ["Meadows Row", null], ["Chest Supported Rows", "Seated_Cable_Rows"], ["Cable Rows", "Seated_Cable_Rows"], ["Wide Grip Cable Row", null]], "A": [["Wide Grip Pull Ups", "Wide-Grip_Rear_Pull-Up"], ["Neutral Grip Pull Ups", null], ["Cross Body One Arm Lat Pulldown", "One_Arm_Lat_Pulldown"], ["Deficit Pendlay Row", "Bent_Over_Barbell_Row"], ["One Arm DB Row", "One-Arm_Dumbbell_Row"], ["Kroc Row", "Shotgun_Row"], ["Cable Lat Prayers", null], ["DB Pullovers", "Bent-Arm_Dumbbell_Pullover"]], "B": [["Chin Ups", "Chin-Up"], ["BB Row", "Bent_Over_Barbell_Row"], ["Pendlay Row", "Bent_Over_Barbell_Row"], ["Rope Face Pull", "Face_Pull"]], "C": [["Deadlift", "Barbell_Deadlift"], ["Yates Row", "Bent_Over_Barbell_Row"], ["Inverted Row", "Inverted_Row"], ["Free Standing T-Bar Row", "T-Bar_Row_with_Handle"]], "D": [["Above the Knee Rack Pull", "Rack_Pulls"]], "F": [["Renegade Rows", "Alternating_Renegade_Row"], ["DB Row Curl", null], ["DB Row Press", null], ["DB Row Kickback", null]]}}, "Shoulders": {"video": "https://www.youtube.com/watch?v=SgyUoY0IZ7A", "tiers": {"S": [["Cable Lat Raise", "Cable_Seated_Lateral_Raise"], ["Cable 'Y' Raise", null], ["Behind the Back Cuffed Cable Lat Raise", null], ["Reverse Pec Deck", "Reverse_Machine_Flyes"], ["Reverse Cable Crossover", "Cable_Crossover"]], "A+": [["Machine Shoulder Press", "Machine_Shoulder_Military_Press"], ["Atlantis Standing Machine Lat Raise", null]], "A": [["Lean-in DB Lat Raises", "Side_Lateral_Raise"], ["Rope Face Pulls", "Face_Pull"], ["Seated DB Overhead Press", "Seated_Dumbbell_Press"], ["'Arnold Style' Side lying DB raises", "Lying_One-Arm_Lateral_Raise"]], "B+": [["Standing BB Overhead Press", "Standing_Military_Press"]], "B": [["Standing DB Lat Raise", "Side_Lateral_Raise"], ["Bent over reverse DB Flye", "Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench"], ["Seated machine lat raise", "Seated_Side_Lateral_Raise"], ["Lean-away DB Lat Raise", "Side_Lateral_Raise"], ["Super ROM DB lat raise", "Side_Lateral_Raise"], ["Seated BB overhead press", "Seated_Barbell_Military_Press"], ["Upright rows", "Upright_Barbell_Row"]], "C": [["Banded Lat raise", "Lateral_Raise_-_With_Bands"]], "D": [["Front raises (of any kind)", "Front_Dumbbell_Raise"]]}}, "Quads": {"video": "https://www.youtube.com/watch?v=kIXcoivzGf8", "tiers": {"S+": [["Hack Squat", "Barbell_Hack_Squat"]], "S": [["Barbell Back Squat", "Barbell_Squat"], ["Pendulum Squat", null], ["Smith Machine Squat", "Smith_Machine_Squat"], ["Bulgarian Split Squat", "Barbell_Side_Split_Squat"]], "A": [["Barbell Front Squat", "Front_Barbell_Squat"], ["Low-Bar Squat", "Barbell_Squat"], ["45 Degree Leg Press", "Leg_Press"], ["Leg Extension", "Leg_Extensions"], ["Reverse Nordic", null]], "B": [["Lunge", "Barbell_Lunge"], ["Goblet Squat", "Goblet_Squat"], ["Sissy Squat", "Weighted_Sissy_Squat"]], "C": [["Horizontal Leg Press", "Leg_Press"], ["Deadlift", "Barbell_Deadlift"], ["Step Ups", "Barbell_Step_Ups"], ["Pistol Squat", "Kettlebell_Pistol_Squat"]], "F": [["Combo Squat Exercises (Jump Squat)", "Freehand_Jump_Squat"]], "F-": [["Bosu Ball Squat", null]]}}, "Glutes": {"video": "https://youtu.be/3ryh7PNhz3E", "tiers": {"S": [["Walking Lunges", "Barbell_Walking_Lunge"], ["Machine Hip Abduction", "Cable_Hip_Adduction"], ["45-Degree Back Extension", "Hyperextensions_Back_Extensions"], ["Smith Machine Lunge (Front Foot Elevated)", null]], "A": [["Machine Hip Thrust", "Barbell_Hip_Thrust"], ["Single-Leg Dumbbell Hip Thrust", "Barbell_Hip_Thrust"], ["Barbell Back Squat", "Barbell_Squat"], ["Smith Machine Squat", "Smith_Machine_Squat"], ["Bulgarian Split Squat", "Barbell_Side_Split_Squat"], ["Kickbacks", "Glute_Kickback"], ["Step Ups", "Barbell_Step_Ups"], ["Smith Machine Lunge", null], ["Romanian Deadlift", "Romanian_Deadlift"]], "B": [["Barbell Hip Thrust", "Barbell_Hip_Thrust"], ["Glute Bridge", "Barbell_Glute_Bridge"], ["Cable Hip Abduction", "Cable_Hip_Adduction"], ["Curtsy Lunge", "Barbell_Lunge"], ["Deadlift (Conventional)", "Barbell_Deadlift"], ["Sumo Deadlift", "Sumo_Deadlift"], ["Cable Pull Through", "Pull_Through"]], "C": [["Frog Pumps", "Frog_Hops"], ["Lateral Banded Walk", null]], "D": [["Donkey Kicks", null], ["Fire Hydrants", null], ["Kettlebell Swing", "One-Arm_Kettlebell_Swings"]]}}, "Triceps": {"video": "https://www.youtube.com/watch?v=OpRMRhr0Ycc", "tiers": {"S+": [["Overhead Cable Triceps Extension (Bar)", "Cable_Rope_Overhead_Triceps_Extension"]], "S": [["Barbell Skullcrusher", "Lying_Close-Grip_Barbell_Triceps_Extension_Behind_The_Head"]], "A": [["Triceps Pressdown (Bar)", "Triceps_Pushdown"], ["Overhead Cable Triceps Extension (Rope)", "Cable_Rope_Overhead_Triceps_Extension"], ["Katana Cable Triceps Extension", null], ["1 Arm Dumbbell Overhead Extension", "Standing_One-Arm_Dumbbell_Triceps_Extension"], ["Dumbbell Skullcrusher", "Lying_Triceps_Press"], ["Smith Machine JM Press", "JM_Press"], ["Cable Triceps Kickback", "One-Legged_Cable_Kickback"], ["Close-Grip Bench Press", "Close-Grip_Barbell_Bench_Press"]], "B": [["Triceps Pressdown (Rope)", "Triceps_Pushdown_-_Rope_Attachment"], ["Dumbbell French Press", "Seated_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension"], ["JM Press", "JM_Press"], ["Close-Grip Dips", "Dips_-_Triceps_Version"], ["Machine Dips", "Dip_Machine"], ["Diamond Pushups", "Pushups"]], "C": [["Reverse Grip Triceps Pressdown (Bar)", "Reverse_Grip_Triceps_Pushdown"], ["Bench Dips", "Bench_Dips"], ["Close-Grip Pushups", "Push-Ups_-_Close_Triceps_Position"]], "C-": [["Dumbbell Triceps Kickback", "Tricep_Dumbbell_Kickback"]]}}, "Biceps": {"video": "https://www.youtube.com/watch?v=GNO4OtYoCYk", "tiers": {"S+": [["Face Away Bayesian Curl", null]], "S": [["Dumbbell Preacher Curl", "One_Arm_Dumbbell_Preacher_Curl"], ["Machine Preacher Curl", "Machine_Preacher_Curls"], ["Preacher Hammer Curl", "Preacher_Hammer_Dumbbell_Curl"]], "A": [["EZ Bar Curl", "EZ-Bar_Curl"], ["Standing Dumbbell Curl", "Dumbbell_Alternate_Bicep_Curl"], ["Incline Curl", "Alternate_Incline_Dumbbell_Curl"], ["Lying Dumbbell Curl", "Lying_Supine_Dumbbell_Curl"], ["Modified 21s", null], ["Standing Cable Curl", "Standing_Biceps_Cable_Curl"], ["Bayesian Cable Curl Variation", "Cable_Preacher_Curl"], ["Cheat Curl", "Barbell_Curl"], ["Strict Curl", "Barbell_Curl"], ["Hammer Curl", "Hammer_Curls"], ["Inverse Zottman Curl", "Zottman_Curl"]], "B": [["Barbell Curl", "Barbell_Curl"], ["Flat Bench Curl", null], ["Chin-Ups", "Chin-Up"]], "C": [["Scott Curl", "Preacher_Curl"], ["Drag Curl", "Drag_Curl"], ["Spider Curl", "Spider_Curl"], ["21s", null]]}}};
 
 const TIER_CLASS = {"S+":"tier-splus","S":"tier-s","A+":"tier-a","A":"tier-a","B+":"tier-b","B":"tier-b","C":"tier-c","C-":"tier-c","D":"tier-d","F":"tier-f","F-":"tier-f"};
-const IMG_BASE = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
+const TIER_PCT = {"S+":100,"S":92,"A+":84,"A":76,"B+":66,"B":56,"C":42,"C-":34,"D":24,"F":14,"F-":6};
+const IMG_BASE = "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/";
+const INSTRUCTIONS_URL = "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/dist/exercises.json";
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let INSTRUCTIONS = {};
+fetch(INSTRUCTIONS_URL).then(r=>r.json()).then(list=>{
+  list.forEach(e=>{ if(e.id && e.instructions) INSTRUCTIONS[e.id] = e.instructions; });
+}).catch(()=>{ /* modal still works, just without written steps */ });
 
 function ytSearch(name){
   return "https://www.youtube.com/results?search_query=" + encodeURIComponent(name + " exercise form");
 }
-
-function fallbackSVG(){
+function placeholderSVG(){
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8v8M20 8v8M2 12h2M20 12h2M7 12h10" stroke-linecap="round"/></svg>';
 }
-
+function placeholderNode(){
+  const d = document.createElement('div');
+  d.className = 'placeholder';
+  d.innerHTML = placeholderSVG() + '<span>No ref · tap for video</span>';
+  return d;
+}
+function frames(id, extraClass){
+  const f0 = document.createElement('img');
+  f0.src = IMG_BASE + id + "/0.jpg"; f0.alt = ''; f0.loading = 'lazy'; f0.className = 'frame f0' + (extraClass?' '+extraClass:'');
+  const f1 = document.createElement('img');
+  f1.src = IMG_BASE + id + "/1.jpg"; f1.alt = ''; f1.loading = 'lazy'; f1.className = 'frame f1' + (extraClass?' '+extraClass:'');
+  return [f0, f1];
+}
 function buildCard(name, id){
   const card = document.createElement('div');
   card.className = 'card';
+  card.tabIndex = 0;
+  card.setAttribute('role','button');
+  card.setAttribute('aria-haspopup','dialog');
+  card.setAttribute('aria-label', name + ' — view form guide');
+
   const thumb = document.createElement('div');
-  thumb.className = 'thumb';
+  thumb.className = 'thumb bracketed';
 
   if(id){
-    const img = document.createElement('img');
-    img.src = IMG_BASE + id + "/0.jpg";
-    img.alt = name;
-    img.loading = "lazy";
-    let frame = 0;
-    img.addEventListener('error', ()=>{ thumb.innerHTML=''; thumb.appendChild(fallbackLink(name)); });
-    thumb.appendChild(img);
-    setInterval(()=>{
-      frame = frame ? 0 : 1;
-      img.src = IMG_BASE + id + "/" + frame + ".jpg";
-    }, 900);
+    const [f0, f1] = frames(id);
+    let failed = false;
+    f0.addEventListener('error', ()=>{ if(!failed){ failed=true; thumb.innerHTML=''; thumb.appendChild(placeholderNode()); } });
+    thumb.appendChild(f0);
+    thumb.appendChild(f1);
   } else {
-    thumb.appendChild(fallbackLink(name));
+    thumb.appendChild(placeholderNode());
   }
 
   const label = document.createElement('div');
   label.className = 'name';
   label.textContent = name;
-
   card.appendChild(thumb);
   card.appendChild(label);
+
+  card.addEventListener('click', ()=> openModal(name, id));
+  card.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openModal(name, id); } });
   return card;
 }
 
-function fallbackLink(name){
-  const a = document.createElement('a');
-  a.className = 'fallback';
-  a.href = ytSearch(name);
-  a.target = '_blank';
-  a.rel = 'noopener';
-  a.innerHTML = fallbackSVG() + '<span>Watch form</span>';
-  return a;
+/* ---------------- Modal ---------------- */
+const modalBackdrop = document.getElementById('modal-backdrop');
+const modalMedia = document.getElementById('modal-media');
+const modalTitle = document.getElementById('modal-title');
+const modalSteps = document.getElementById('modal-steps');
+const modalNoinfo = document.getElementById('modal-noinfo');
+const modalYt = document.getElementById('modal-yt');
+const modalClose = document.getElementById('modal-close');
+let lastFocused = null;
+
+function openModal(name, id){
+  lastFocused = document.activeElement;
+  modalTitle.textContent = name;
+  modalMedia.innerHTML = '';
+  if(id){
+    const [f0, f1] = frames(id);
+    f0.addEventListener('error', ()=>{ modalMedia.innerHTML=''; });
+    modalMedia.appendChild(f0);
+    modalMedia.appendChild(f1);
+  }
+
+  const steps = INSTRUCTIONS[id];
+  modalSteps.innerHTML = '';
+  if(steps && steps.length){
+    modalSteps.hidden = false;
+    modalNoinfo.hidden = true;
+    steps.forEach(s=>{ const li=document.createElement('li'); li.textContent=s; modalSteps.appendChild(li); });
+  } else {
+    modalSteps.hidden = true;
+    modalNoinfo.hidden = false;
+  }
+
+  modalYt.href = ytSearch(name);
+  modalBackdrop.hidden = false;
+  modalClose.focus();
+  document.body.style.overflow = 'hidden';
 }
+function closeModal(){
+  modalBackdrop.hidden = true;
+  document.body.style.overflow = '';
+  if(lastFocused) lastFocused.focus();
+}
+modalClose.addEventListener('click', closeModal);
+modalBackdrop.addEventListener('click', (e)=>{ if(e.target === modalBackdrop) closeModal(); });
+document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && !modalBackdrop.hidden) closeModal(); });
 
 const nav = document.getElementById('nav');
 const panels = document.getElementById('panels');
 const groupNames = Object.keys(DATA);
 
-groupNames.forEach((g, i)=>{
+function selectGroup(g, updateHash){
+  document.querySelectorAll('nav.groups button').forEach(b=>b.setAttribute('aria-selected', b.dataset.g === g ? 'true':'false'));
+  document.querySelectorAll('.group-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+g).classList.add('active');
+  if(updateHash) history.replaceState(null,'','#'+g);
+}
+
+groupNames.forEach((g)=>{
   const btn = document.createElement('button');
   btn.textContent = g;
-  if(i===0) btn.classList.add('active');
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('nav.groups button').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.group-panel').forEach(p=>p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('panel-'+g).classList.add('active');
-    btn.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
-  });
+  btn.dataset.g = g;
+  btn.setAttribute('role','tab');
+  btn.setAttribute('aria-selected','false');
+  btn.id = 'tab-'+g;
+  btn.setAttribute('aria-controls','panel-'+g);
+  btn.addEventListener('click', ()=>{ selectGroup(g, true); btn.scrollIntoView({behavior: reduceMotion?'auto':'smooth', inline:'center', block:'nearest'}); });
   nav.appendChild(btn);
 
   const panel = document.createElement('div');
-  panel.className = 'group-panel' + (i===0 ? ' active':'');
+  panel.className = 'group-panel';
   panel.id = 'panel-'+g;
+  panel.setAttribute('role','tabpanel');
+  panel.setAttribute('aria-labelledby','tab-'+g);
 
   const head = document.createElement('div');
   head.className = 'group-head';
-  head.innerHTML = `<h2>${g}</h2><a href="${DATA[g].video}" target="_blank" rel="noopener">Watch Nippard's ${g} breakdown &rarr;</a>`;
+  head.innerHTML = `<h2><span class="sys">SYS//</span>${g}</h2><a href="${DATA[g].video}" target="_blank" rel="noopener">▶ Nippard breakdown</a>`;
   panel.appendChild(head);
 
   Object.entries(DATA[g].tiers).forEach(([tier, exs])=>{
@@ -286,21 +449,33 @@ groupNames.forEach((g, i)=>{
     const row = document.createElement('div');
     row.className = 'tier-row ' + (TIER_CLASS[tier]||'tier-b');
 
+    const gauge = document.createElement('div');
+    gauge.className = 'tier-gauge';
+    gauge.innerHTML = `<span class="code">${tier}</span><span class="bar"><i style="height:${TIER_PCT[tier]||50}%"></i></span>`;
+    row.appendChild(gauge);
+
+    const body = document.createElement('div');
+    body.className = 'tier-body';
+
     const tl = document.createElement('div');
     tl.className = 'tier-label';
-    tl.innerHTML = `<span>${tier} Tier</span><span class="count">${exs.length} exercise${exs.length>1?'s':''}</span>`;
-    row.appendChild(tl);
+    tl.innerHTML = `<span>${tier} TIER</span><span class="count">${exs.length} EXERCISE${exs.length>1?'S':''}</span>`;
+    body.appendChild(tl);
 
     const grid = document.createElement('div');
     grid.className = 'card-grid';
     exs.forEach(([name, id])=> grid.appendChild(buildCard(name, id)));
-    row.appendChild(grid);
+    body.appendChild(grid);
 
+    row.appendChild(body);
     panel.appendChild(row);
   });
 
   panels.appendChild(panel);
 });
+
+const initial = groupNames.includes(location.hash.slice(1)) ? location.hash.slice(1) : groupNames[0];
+selectGroup(initial, false);
 </script>
 </body>
 </html>
