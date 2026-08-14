@@ -88,6 +88,117 @@
     display:flex; gap:6px; margin-bottom:24px; flex-wrap:nowrap; overflow-x:auto;
     -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:2px;
   }
+
+  .mode-switch{display:flex; gap:6px; margin-bottom:18px;}
+  .mode-btn{
+    background:var(--panel); color:var(--ink-dim); border:1px solid var(--line);
+    padding:8px 16px; font-size:11.5px; font-weight:700; cursor:pointer;
+    font-family:'IBM Plex Mono',monospace; letter-spacing:.05em; text-transform:uppercase;
+    transition:all .15s ease;
+  }
+  .mode-btn:hover{color:var(--ink); border-color:var(--blue-dim);}
+  .mode-btn.active{background:var(--blue); color:#04141c; border-color:var(--blue);}
+
+  .day-panel{display:none;}
+  .day-panel.active{display:block; animation:sweep .4s ease;}
+  @media (prefers-reduced-motion: reduce){ .day-panel.active{animation:none;} }
+
+  .day-head{
+    display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px; flex-wrap:wrap; gap:8px;
+    padding-bottom:10px; border-bottom:1px solid var(--line);
+  }
+  .day-head h2{
+    font-family:'IBM Plex Mono',monospace; font-size:18px; margin:0; font-weight:600;
+    text-transform:uppercase; letter-spacing:.06em; color:var(--ink);
+  }
+  .day-head .sys{color:var(--ink-faint); font-weight:400; margin-right:8px;}
+  .day-head .day-tag{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--blue); letter-spacing:.05em;
+    border:1px solid var(--blue-dim); padding:5px 10px; text-transform:uppercase;
+  }
+
+  .rest-note{
+    padding:40px 20px; text-align:center; color:var(--ink-dim); font-family:'IBM Plex Mono',monospace;
+    font-size:13px; border:1px dashed var(--line); background:var(--panel);
+  }
+
+  .volume-summary{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:1px;
+    background:var(--line); border:1px solid var(--line); margin-bottom:18px;
+  }
+  .vol-cell{background:var(--panel); padding:10px 12px; display:flex; flex-direction:column; gap:4px;}
+  .vol-cell .vol-muscle{font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:.05em;}
+  .vol-cell .vol-num{font-family:'IBM Plex Mono',monospace; font-size:17px; font-weight:700;}
+  .vol-cell .vol-range{font-size:9.5px; color:var(--ink-faint); font-family:'IBM Plex Mono',monospace;}
+  .vol-cell.vol-ok .vol-num{color:var(--b);}
+  .vol-cell.vol-low .vol-num{color:var(--amber);}
+  .vol-cell.vol-high .vol-num{color:var(--splus);}
+
+  .program-intro{
+    border:1px solid var(--line-bright); background:var(--panel); padding:14px 16px; margin-bottom:18px;
+    font-size:12.5px; line-height:1.6; color:var(--ink-dim);
+  }
+  .program-intro strong{color:var(--ink); font-weight:700;}
+
+  #weekNav{margin-bottom:12px;}
+  #weekNav button.deload{border-color:var(--amber); color:var(--amber);}
+  #weekNav button.deload[aria-selected="true"]{background:var(--amber); color:#1a1200; border-color:var(--amber);}
+
+  .prog-row{
+    display:flex; align-items:center; gap:14px; padding:12px 14px; border:1px solid var(--line);
+    background:var(--panel); margin-bottom:8px; flex-wrap:wrap;
+  }
+  .prog-row .idx{flex:0 0 26px; font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-faint); text-align:center;}
+  .prog-row .prog-name{flex:1 1 160px; min-width:120px; font-size:13px; font-weight:600; color:var(--ink);}
+  .prog-row .prog-target{
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--blue); font-weight:700;
+    background:var(--panel-raised); border:1px solid var(--blue-dim); padding:6px 10px; white-space:nowrap;
+  }
+  .prog-row.is-deload .prog-target{color:var(--amber); border-color:var(--amber);}
+  .prog-row .weight-input-wrap{display:flex; align-items:center; gap:6px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-dim);}
+  .prog-row input.weight-input{
+    width:64px; background:var(--void); border:1px solid var(--line-bright); color:var(--ink);
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; padding:6px 8px; text-align:right;
+  }
+  .prog-row input.weight-input:focus{outline:2px solid var(--blue); outline-offset:1px;}
+
+  .exercise-row{
+    display:flex; align-items:center; gap:14px; padding:12px 14px; border:1px solid var(--line);
+    background:var(--panel); margin-bottom:8px; cursor:pointer; transition:background .12s ease;
+  }
+  .exercise-row:hover, .exercise-row:focus-visible{background:var(--panel-raised); border-color:var(--blue-dim);}
+  .exercise-row .idx{
+    flex:0 0 26px; font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-faint); text-align:center;
+  }
+  .exercise-row .ex-thumb{
+    flex:0 0 52px; width:52px; height:52px; position:relative; overflow:hidden; background:#080a0c; border:1px solid var(--line);
+  }
+  .exercise-row .ex-thumb .frame{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; animation:gifLoop 1.8s ease-in-out infinite;}
+  .exercise-row .ex-thumb .frame.f0{animation-delay:0s;}
+  .exercise-row .ex-thumb .frame.f1{animation-delay:.9s;}
+  @media (prefers-reduced-motion: reduce){
+    .exercise-row .ex-thumb .frame{animation:none; opacity:0;}
+    .exercise-row .ex-thumb .frame.f0{opacity:1;}
+  }
+  .exercise-row .ex-info{flex:1; min-width:0;}
+  .exercise-row .ex-name{font-size:13.5px; font-weight:600; color:var(--ink); line-height:1.3;}
+  .exercise-row .ex-meta{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-dim); letter-spacing:.03em;
+    margin-top:3px; text-transform:uppercase; display:flex; gap:8px; flex-wrap:wrap;
+  }
+  .exercise-row .ex-meta .role-compound{color:var(--blue);}
+  .exercise-row .ex-meta .role-isolation{color:var(--amber);}
+  .exercise-row .tier-chip{
+    flex:0 0 auto; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:11.5px;
+    padding:4px 8px; border-radius:2px; min-width:28px; text-align:center;
+  }
+  .tier-chip.tier-splus{background:var(--splus); color:#fff;}
+  .tier-chip.tier-s{background:var(--s); color:#1a1200;}
+  .tier-chip.tier-a{background:var(--a); color:#1a1200;}
+  .tier-chip.tier-b{background:var(--b); color:#04141c;}
+  .tier-chip.tier-c{background:var(--c); color:#031014;}
+  .tier-chip.tier-d{background:var(--d); color:#f4f4ff;}
+  .tier-chip.tier-f{background:var(--f); color:#fff;}
   nav.groups::-webkit-scrollbar{display:none;}
   nav.groups button{
     background:var(--panel); color:var(--ink-dim); border:1px solid var(--line);
@@ -262,9 +373,31 @@
     .tier-gauge{flex-basis:36px;}
     .tier-gauge .code{font-size:12px;}
     .tier-gauge .bar{height:44px;}
+    .exercise-row{padding:10px; gap:10px;}
+    .exercise-row .ex-thumb{flex-basis:44px; width:44px; height:44px;}
+    .exercise-row .ex-name{font-size:12.5px;}
+    .exercise-row .ex-meta{font-size:10px; gap:6px;}
+  }
+
+  @media (max-width:380px){
+    .card-grid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));}
+    header.top h1{font-size:18px;}
   }
 
   :focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
+
+  @supports (padding: max(0px)){
+    .wrap{
+      padding-left:max(20px, env(safe-area-inset-left));
+      padding-right:max(20px, env(safe-area-inset-right));
+    }
+    @media (max-width:600px){
+      .wrap{
+        padding-left:max(16px, env(safe-area-inset-left));
+        padding-right:max(16px, env(safe-area-inset-right));
+      }
+    }
+  }
 </style>
 </head>
 <body>
@@ -277,8 +410,25 @@
     <div class="sub">Images cycle start/finish position per lift. No photo on file → tap for a form-check reference.</div>
   </header>
 
-  <nav class="groups" id="nav" role="tablist" aria-label="Muscle groups"></nav>
-  <div id="panels"></div>
+  <div class="mode-switch" role="tablist" aria-label="View mode">
+    <button id="mode-muscle" class="mode-btn active" role="tab" aria-selected="true">By Muscle</button>
+    <button id="mode-routine" class="mode-btn" role="tab" aria-selected="false">Workout Routine</button>
+  </div>
+
+  <div id="muscleView">
+    <nav class="groups" id="nav" role="tablist" aria-label="Muscle groups"></nav>
+    <div id="panels"></div>
+  </div>
+
+  <div id="routineView" hidden>
+    <div class="program-intro">
+      <strong>6-week block, double progression, then deload.</strong> Add a rep to your top set each week you're in the range; when you hit the top, add weight and drop back to the bottom. Week 7 halves the sets and drops the load — leave 3–4 reps in the tank on everything. Enter your current working weight once per exercise below; every week recalculates from that automatically.
+    </div>
+    <div id="volumeSummary" class="volume-summary"></div>
+    <nav class="groups" id="weekNav" role="tablist" aria-label="Training week"></nav>
+    <nav class="groups" id="dayNav" role="tablist" aria-label="Training days"></nav>
+    <div id="dayPanels"></div>
+  </div>
 
   <footer>
     // Reference photos: free-exercise-db public dataset (closest available match — a few are nearest-equivalent lifts, not the exact named variation).
@@ -301,7 +451,7 @@
 </div>
 
 <script>
-const DATA = {"Chest": {"video": "https://www.youtube.com/watch?v=fGm-ef-4PVk", "tiers": {"S+": [["Machine Chest Press", "Machine_Bench_Press"]], "S": [["Seated Cable Pec Flye", "Cable_Crossover"]], "A": [["Bench Press", "Barbell_Bench_Press_-_Medium_Grip"], ["Incline Bench Press", "Barbell_Incline_Bench_Press_-_Medium_Grip"], ["Flat Dumbbell Press", "Dumbbell_Bench_Press"], ["Incline Dumbbell Press", "Incline_Dumbbell_Press"], ["Dips", "Dips_-_Chest_Version"], ["Deficit Pushups", "Decline_Push-Up"], ["Dumbbell Guillotine Press", "Barbell_Guillotine_Bench_Press"], ["Smith Machine Bench Press", "Smith_Machine_Bench_Press"], ["Incline Smith Machine Bench Press", "Smith_Machine_Incline_Bench_Press"], ["Cable Crossovers", "Cable_Crossover"], ["Pec Deck", "Butterfly"], ["Dumbbell Flye", "Dumbbell_Flyes"], ["Cable Press-around", "Low_Cable_Crossover"]], "B": [["Decline Bench Press", "Decline_Barbell_Bench_Press"], ["Decline Dumbbell Press", "Decline_Dumbbell_Bench_Press"], ["Banded Pushups", "Pushups"]], "C": [["Pushups", "Pushups"], ["Floor Press", "Floor_Press"]], "D": [["Dumbbell Pullover", "Bent-Arm_Dumbbell_Pullover"], ["Plyometric Pushups", "Plyo_Push-up"]], "F": [["Hex Press", "Dumbbell_Bench_Press"], ["Guillotine Press", "Barbell_Guillotine_Bench_Press"], ["1-Arm Dumbbell Press", "One_Arm_Dumbbell_Bench_Press"], ["Cross-body Standing Dumbbell Flye", "Single-Arm_Cable_Crossover"]], "F-": [["Plate Press", "Svend_Press"]]}}, "Back": {"video": "https://www.youtube.com/watch?v=jLvqKgW-_G8", "tiers": {"S": [["Widegrip Lat Pulldown", "Wide-Grip_Lat_Pulldown"], ["Neutral Grip Lat Pulldown", "V-Bar_Pulldown"], ["One Arm Lat Pulldown", "One_Arm_Lat_Pulldown"], ["Meadows Row", "Bent_Over_One-Arm_Long_Bar_Row"], ["Chest Supported Rows", "Leverage_Iso_Row"], ["Cable Rows", "Seated_Cable_Rows"], ["Wide Grip Cable Row", "Elevated_Cable_Rows"]], "A": [["Wide Grip Pull Ups", "Wide-Grip_Rear_Pull-Up"], ["Neutral Grip Pull Ups", "Weighted_Pull_Ups"], ["Cross Body One Arm Lat Pulldown", "One_Arm_Lat_Pulldown"], ["Deficit Pendlay Row", "Bent_Over_Barbell_Row"], ["One Arm DB Row", "One-Arm_Dumbbell_Row"], ["Kroc Row", "Shotgun_Row"], ["Cable Lat Prayers", "Rope_Straight-Arm_Pulldown"], ["DB Pullovers", "Bent-Arm_Dumbbell_Pullover"]], "B": [["Chin Ups", "Chin-Up"], ["BB Row", "Bent_Over_Barbell_Row"], ["Pendlay Row", "Bent_Over_Barbell_Row"], ["Rope Face Pull", "Face_Pull"]], "C": [["Deadlift", "Barbell_Deadlift"], ["Yates Row", "Bent_Over_Barbell_Row"], ["Inverted Row", "Inverted_Row"], ["Free Standing T-Bar Row", "T-Bar_Row_with_Handle"]], "D": [["Above the Knee Rack Pull", "Rack_Pulls"]], "F": [["Renegade Rows", "Alternating_Renegade_Row"], ["DB Row Curl", "Bent_Over_Two-Dumbbell_Row"], ["DB Row Press", "Bent_Over_Two-Dumbbell_Row_With_Palms_In"], ["DB Row Kickback", "One-Arm_Dumbbell_Row"]]}}, "Shoulders": {"video": "https://www.youtube.com/watch?v=SgyUoY0IZ7A", "tiers": {"S": [["Cable Lat Raise", "Cable_Seated_Lateral_Raise"], ["Cable 'Y' Raise", "Cable_Rear_Delt_Fly"], ["Behind the Back Cuffed Cable Lat Raise", "One-Arm_Incline_Lateral_Raise"], ["Reverse Pec Deck", "Reverse_Machine_Flyes"], ["Reverse Cable Crossover", "Cable_Crossover"]], "A+": [["Machine Shoulder Press", "Machine_Shoulder_Military_Press"], ["Atlantis Standing Machine Lat Raise", "Seated_Side_Lateral_Raise"]], "A": [["Lean-in DB Lat Raises", "Side_Lateral_Raise"], ["Rope Face Pulls", "Face_Pull"], ["Seated DB Overhead Press", "Seated_Dumbbell_Press"], ["'Arnold Style' Side lying DB raises", "Lying_One-Arm_Lateral_Raise"]], "B+": [["Standing BB Overhead Press", "Standing_Military_Press"]], "B": [["Standing DB Lat Raise", "Side_Lateral_Raise"], ["Bent over reverse DB Flye", "Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench"], ["Seated machine lat raise", "Seated_Side_Lateral_Raise"], ["Lean-away DB Lat Raise", "Dumbbell_Lying_One-Arm_Rear_Lateral_Raise"], ["Super ROM DB lat raise", "Dumbbell_Lying_Rear_Lateral_Raise"], ["Seated BB overhead press", "Seated_Barbell_Military_Press"], ["Upright rows", "Upright_Barbell_Row"]], "C": [["Banded Lat raise", "Lateral_Raise_-_With_Bands"]], "D": [["Front raises (of any kind)", "Front_Dumbbell_Raise"]]}}, "Quads": {"video": "https://www.youtube.com/watch?v=kIXcoivzGf8", "tiers": {"S+": [["Hack Squat", "Barbell_Hack_Squat"]], "S": [["Barbell Back Squat", "Barbell_Squat"], ["Pendulum Squat", "Hack_Squat"], ["Smith Machine Squat", "Smith_Machine_Squat"], ["Bulgarian Split Squat", "Barbell_Side_Split_Squat"]], "A": [["Barbell Front Squat", "Front_Barbell_Squat"], ["Low-Bar Squat", "Barbell_Squat"], ["45 Degree Leg Press", "Leg_Press"], ["Leg Extension", "Leg_Extensions"], ["Reverse Nordic", "Weighted_Sissy_Squat"]], "B": [["Lunge", "Barbell_Lunge"], ["Goblet Squat", "Goblet_Squat"], ["Sissy Squat", "Weighted_Sissy_Squat"]], "C": [["Horizontal Leg Press", "Leg_Press"], ["Deadlift", "Barbell_Deadlift"], ["Step Ups", "Barbell_Step_Ups"], ["Pistol Squat", "Kettlebell_Pistol_Squat"]], "F": [["Combo Squat Exercises (Jump Squat)", "Freehand_Jump_Squat"]], "F-": [["Bosu Ball Squat", null]]}}, "Glutes": {"video": "https://youtu.be/3ryh7PNhz3E", "tiers": {"S": [["Walking Lunges", "Barbell_Walking_Lunge"], ["Machine Hip Abduction", "Cable_Hip_Adduction"], ["45-Degree Back Extension", "Hyperextensions_Back_Extensions"], ["Smith Machine Lunge (Front Foot Elevated)", "Elevated_Back_Lunge"]], "A": [["Machine Hip Thrust", "Barbell_Hip_Thrust"], ["Single-Leg Dumbbell Hip Thrust", "Barbell_Hip_Thrust"], ["Barbell Back Squat", "Barbell_Squat"], ["Smith Machine Squat", "Smith_Machine_Squat"], ["Bulgarian Split Squat", "Barbell_Side_Split_Squat"], ["Kickbacks", "Glute_Kickback"], ["Step Ups", "Barbell_Step_Ups"], ["Smith Machine Lunge", "Barbell_Lunge"], ["Romanian Deadlift", "Romanian_Deadlift"]], "B": [["Barbell Hip Thrust", "Barbell_Hip_Thrust"], ["Glute Bridge", "Barbell_Glute_Bridge"], ["Cable Hip Abduction", "Cable_Hip_Adduction"], ["Curtsy Lunge", "Barbell_Lunge"], ["Deadlift (Conventional)", "Barbell_Deadlift"], ["Sumo Deadlift", "Sumo_Deadlift"], ["Cable Pull Through", "Pull_Through"]], "C": [["Frog Pumps", "Frog_Hops"], ["Lateral Banded Walk", null]], "D": [["Donkey Kicks", "Glute_Kickback"], ["Fire Hydrants", null], ["Kettlebell Swing", "One-Arm_Kettlebell_Swings"]]}}, "Triceps": {"video": "https://www.youtube.com/watch?v=OpRMRhr0Ycc", "tiers": {"S+": [["Overhead Cable Triceps Extension (Bar)", "Cable_Rope_Overhead_Triceps_Extension"]], "S": [["Barbell Skullcrusher", "Lying_Close-Grip_Barbell_Triceps_Extension_Behind_The_Head"]], "A": [["Triceps Pressdown (Bar)", "Triceps_Pushdown"], ["Overhead Cable Triceps Extension (Rope)", "Cable_Rope_Overhead_Triceps_Extension"], ["Katana Cable Triceps Extension", "Kneeling_Cable_Triceps_Extension"], ["1 Arm Dumbbell Overhead Extension", "Standing_One-Arm_Dumbbell_Triceps_Extension"], ["Dumbbell Skullcrusher", "Lying_Triceps_Press"], ["Smith Machine JM Press", "JM_Press"], ["Cable Triceps Kickback", "One-Legged_Cable_Kickback"], ["Close-Grip Bench Press", "Close-Grip_Barbell_Bench_Press"]], "B": [["Triceps Pressdown (Rope)", "Triceps_Pushdown_-_Rope_Attachment"], ["Dumbbell French Press", "Seated_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension"], ["JM Press", "JM_Press"], ["Close-Grip Dips", "Dips_-_Triceps_Version"], ["Machine Dips", "Dip_Machine"], ["Diamond Pushups", "Pushups"]], "C": [["Reverse Grip Triceps Pressdown (Bar)", "Reverse_Grip_Triceps_Pushdown"], ["Bench Dips", "Bench_Dips"], ["Close-Grip Pushups", "Push-Ups_-_Close_Triceps_Position"]], "C-": [["Dumbbell Triceps Kickback", "Tricep_Dumbbell_Kickback"]]}}, "Biceps": {"video": "https://www.youtube.com/watch?v=GNO4OtYoCYk", "tiers": {"S+": [["Face Away Bayesian Curl", "Standing_One-Arm_Cable_Curl"]], "S": [["Dumbbell Preacher Curl", "One_Arm_Dumbbell_Preacher_Curl"], ["Machine Preacher Curl", "Machine_Preacher_Curls"], ["Preacher Hammer Curl", "Preacher_Hammer_Dumbbell_Curl"]], "A": [["EZ Bar Curl", "EZ-Bar_Curl"], ["Standing Dumbbell Curl", "Dumbbell_Alternate_Bicep_Curl"], ["Incline Curl", "Alternate_Incline_Dumbbell_Curl"], ["Lying Dumbbell Curl", "Lying_Supine_Dumbbell_Curl"], ["Modified 21s", "Wide-Grip_Standing_Barbell_Curl"], ["Standing Cable Curl", "Standing_Biceps_Cable_Curl"], ["Bayesian Cable Curl Variation", "Cable_Preacher_Curl"], ["Cheat Curl", "Barbell_Curl"], ["Strict Curl", "Close-Grip_Standing_Barbell_Curl"], ["Hammer Curl", "Hammer_Curls"], ["Inverse Zottman Curl", "Zottman_Curl"]], "B": [["Barbell Curl", "Barbell_Curl"], ["Flat Bench Curl", "Lying_Supine_Dumbbell_Curl"], ["Chin-Ups", "Chin-Up"]], "C": [["Scott Curl", "Preacher_Curl"], ["Drag Curl", "Drag_Curl"], ["Spider Curl", "Spider_Curl"], ["21s", "Barbell_Curl"]]}}};
+const DATA = {"Chest": {"video": "https://www.youtube.com/watch?v=fGm-ef-4PVk", "tiers": {"S+": [["Machine Chest Press", "Machine_Bench_Press"]], "S": [["Seated Cable Pec Flye", "Cable_Crossover"]], "A": [["Bench Press", "Barbell_Bench_Press_-_Medium_Grip"], ["Incline Bench Press", "Barbell_Incline_Bench_Press_-_Medium_Grip"], ["Flat Dumbbell Press", "Dumbbell_Bench_Press"], ["Incline Dumbbell Press", "Incline_Dumbbell_Press"], ["Dips", "Dips_-_Chest_Version"], ["Deficit Pushups", "Decline_Push-Up"], ["Dumbbell Guillotine Press", "Barbell_Guillotine_Bench_Press"], ["Smith Machine Bench Press", "Smith_Machine_Bench_Press"], ["Incline Smith Machine Bench Press", "Smith_Machine_Incline_Bench_Press"], ["Cable Crossovers", "Cable_Crossover"], ["Pec Deck", "Butterfly"], ["Dumbbell Flye", "Dumbbell_Flyes"], ["Cable Press-around", "Low_Cable_Crossover"]], "B": [["Decline Bench Press", "Decline_Barbell_Bench_Press"], ["Decline Dumbbell Press", "Decline_Dumbbell_Bench_Press"], ["Banded Pushups", "Pushups"]], "C": [["Pushups", "Pushups"], ["Floor Press", "Floor_Press"]], "D": [["Dumbbell Pullover", "Bent-Arm_Dumbbell_Pullover"], ["Plyometric Pushups", "Plyo_Push-up"]], "F": [["Hex Press", "Dumbbell_Bench_Press"], ["Guillotine Press", "Barbell_Guillotine_Bench_Press"], ["1-Arm Dumbbell Press", "One_Arm_Dumbbell_Bench_Press"], ["Cross-body Standing Dumbbell Flye", "Single-Arm_Cable_Crossover"]], "F-": [["Plate Press", "Svend_Press"]]}}, "Back": {"video": "https://www.youtube.com/watch?v=jLvqKgW-_G8", "tiers": {"S": [["Widegrip Lat Pulldown", "Wide-Grip_Lat_Pulldown"], ["Neutral Grip Lat Pulldown", "V-Bar_Pulldown"], ["One Arm Lat Pulldown", "One_Arm_Lat_Pulldown"], ["Meadows Row", "Bent_Over_One-Arm_Long_Bar_Row"], ["Chest Supported Rows", "Leverage_Iso_Row"], ["Cable Rows", "Seated_Cable_Rows"], ["Wide Grip Cable Row", "Elevated_Cable_Rows"]], "A": [["Wide Grip Pull Ups", "Wide-Grip_Rear_Pull-Up"], ["Neutral Grip Pull Ups", "Weighted_Pull_Ups"], ["Cross Body One Arm Lat Pulldown", "One_Arm_Lat_Pulldown"], ["Deficit Pendlay Row", "Bent_Over_Barbell_Row"], ["One Arm DB Row", "One-Arm_Dumbbell_Row"], ["Kroc Row", "Shotgun_Row"], ["Cable Lat Prayers", "Rope_Straight-Arm_Pulldown"], ["DB Pullovers", "Bent-Arm_Dumbbell_Pullover"]], "B": [["Chin Ups", "Chin-Up"], ["BB Row", "Bent_Over_Barbell_Row"], ["Pendlay Row", "Bent_Over_Barbell_Row"], ["Rope Face Pull", "Face_Pull"], ["Barbell Shrug", "Barbell_Shrug"], ["Dumbbell Shrug", "Dumbbell_Shrug"]], "C": [["Deadlift", "Barbell_Deadlift"], ["Yates Row", "Bent_Over_Barbell_Row"], ["Inverted Row", "Inverted_Row"], ["Free Standing T-Bar Row", "T-Bar_Row_with_Handle"]], "D": [["Above the Knee Rack Pull", "Rack_Pulls"]], "F": [["Renegade Rows", "Alternating_Renegade_Row"], ["DB Row Curl", "Bent_Over_Two-Dumbbell_Row"], ["DB Row Press", "Bent_Over_Two-Dumbbell_Row_With_Palms_In"], ["DB Row Kickback", "One-Arm_Dumbbell_Row"]]}}, "Shoulders": {"video": "https://www.youtube.com/watch?v=SgyUoY0IZ7A", "tiers": {"S": [["Cable Lat Raise", "Cable_Seated_Lateral_Raise"], ["Cable 'Y' Raise", "Cable_Rear_Delt_Fly"], ["Behind the Back Cuffed Cable Lat Raise", "One-Arm_Incline_Lateral_Raise"], ["Reverse Pec Deck", "Reverse_Machine_Flyes"], ["Reverse Cable Crossover", "Cable_Crossover"]], "A+": [["Machine Shoulder Press", "Machine_Shoulder_Military_Press"], ["Atlantis Standing Machine Lat Raise", "Seated_Side_Lateral_Raise"]], "A": [["Lean-in DB Lat Raises", "Side_Lateral_Raise"], ["Rope Face Pulls", "Face_Pull"], ["Seated DB Overhead Press", "Seated_Dumbbell_Press"], ["'Arnold Style' Side lying DB raises", "Lying_One-Arm_Lateral_Raise"]], "B+": [["Standing BB Overhead Press", "Standing_Military_Press"]], "B": [["Standing DB Lat Raise", "Side_Lateral_Raise"], ["Bent over reverse DB Flye", "Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench"], ["Seated machine lat raise", "Seated_Side_Lateral_Raise"], ["Lean-away DB Lat Raise", "Dumbbell_Lying_One-Arm_Rear_Lateral_Raise"], ["Super ROM DB lat raise", "Dumbbell_Lying_Rear_Lateral_Raise"], ["Seated BB overhead press", "Seated_Barbell_Military_Press"], ["Upright rows", "Upright_Barbell_Row"]], "C": [["Banded Lat raise", "Lateral_Raise_-_With_Bands"]], "D": [["Front raises (of any kind)", "Front_Dumbbell_Raise"]]}}, "Quads": {"video": "https://www.youtube.com/watch?v=kIXcoivzGf8", "tiers": {"S+": [["Hack Squat", "Barbell_Hack_Squat"]], "S": [["Barbell Back Squat", "Barbell_Squat"], ["Pendulum Squat", "Hack_Squat"], ["Smith Machine Squat", "Smith_Machine_Squat"], ["Bulgarian Split Squat", "Barbell_Side_Split_Squat"]], "A": [["Barbell Front Squat", "Front_Barbell_Squat"], ["Low-Bar Squat", "Barbell_Squat"], ["45 Degree Leg Press", "Leg_Press"], ["Leg Extension", "Leg_Extensions"], ["Reverse Nordic", "Weighted_Sissy_Squat"]], "B": [["Lunge", "Barbell_Lunge"], ["Goblet Squat", "Goblet_Squat"], ["Sissy Squat", "Weighted_Sissy_Squat"]], "C": [["Horizontal Leg Press", "Leg_Press"], ["Deadlift", "Barbell_Deadlift"], ["Step Ups", "Barbell_Step_Ups"], ["Pistol Squat", "Kettlebell_Pistol_Squat"]], "F": [["Combo Squat Exercises (Jump Squat)", "Freehand_Jump_Squat"]], "F-": [["Bosu Ball Squat", null]]}}, "Glutes": {"video": "https://youtu.be/3ryh7PNhz3E", "tiers": {"S": [["Walking Lunges", "Barbell_Walking_Lunge"], ["Machine Hip Abduction", "Cable_Hip_Adduction"], ["45-Degree Back Extension", "Hyperextensions_Back_Extensions"], ["Smith Machine Lunge (Front Foot Elevated)", "Elevated_Back_Lunge"]], "A": [["Machine Hip Thrust", "Barbell_Hip_Thrust"], ["Single-Leg Dumbbell Hip Thrust", "Barbell_Hip_Thrust"], ["Barbell Back Squat", "Barbell_Squat"], ["Smith Machine Squat", "Smith_Machine_Squat"], ["Bulgarian Split Squat", "Barbell_Side_Split_Squat"], ["Kickbacks", "Glute_Kickback"], ["Step Ups", "Barbell_Step_Ups"], ["Smith Machine Lunge", "Barbell_Lunge"], ["Romanian Deadlift", "Romanian_Deadlift"]], "B": [["Barbell Hip Thrust", "Barbell_Hip_Thrust"], ["Glute Bridge", "Barbell_Glute_Bridge"], ["Cable Hip Abduction", "Cable_Hip_Adduction"], ["Curtsy Lunge", "Barbell_Lunge"], ["Deadlift (Conventional)", "Barbell_Deadlift"], ["Sumo Deadlift", "Sumo_Deadlift"], ["Cable Pull Through", "Pull_Through"]], "C": [["Frog Pumps", "Frog_Hops"], ["Lateral Banded Walk", null]], "D": [["Donkey Kicks", "Glute_Kickback"], ["Fire Hydrants", null], ["Kettlebell Swing", "One-Arm_Kettlebell_Swings"]]}}, "Hamstrings": {"video": "https://www.youtube.com/results?search_query=jeff+nippard+hamstring+exercises+ranked", "tiers": {"S+": [["Seated Leg Curl", "Seated_Leg_Curl"]], "S": [["Lying Leg Curl", "Lying_Leg_Curls"]], "A": [["Romanian Deadlift", "Romanian_Deadlift"], ["Glute-Ham Raise", "Glute_Ham_Raise"], ["Stiff-Leg Deadlift", "Stiff-Legged_Barbell_Deadlift"]], "B": [["Standing Leg Curl", "Standing_Leg_Curl"], ["Good Morning", "Good_Morning"]], "C": [["Ball Leg Curl", "Ball_Leg_Curl"], ["Cable Pull Through", "Pull_Through"]], "D": [["Stiff-Leg Dumbbell Deadlift", "Stiff-Legged_Dumbbell_Deadlift"]], "F": [["Conventional Deadlift", "Barbell_Deadlift"]]}}, "Calves": {"video": "https://www.youtube.com/results?search_query=jeff+nippard+calf+exercises+ranked", "tiers": {"S+": [["Standing Barbell Calf Raise", "Standing_Barbell_Calf_Raise"]], "S": [["Donkey Calf Raises", "Donkey_Calf_Raises"]], "A": [["Seated Calf Raise", "Seated_Calf_Raise"], ["Smith Machine Calf Raise", "Smith_Machine_Calf_Raise"]], "B": [["Calf Raise On A Dumbbell", "Calf_Raise_On_A_Dumbbell"], ["Dumbbell Seated One-Leg Calf Raise", "Dumbbell_Seated_One-Leg_Calf_Raise"]], "C": [["Rocking Standing Calf Raise", "Rocking_Standing_Calf_Raise"], ["Calf Raises - With Bands", "Calf_Raises_-_With_Bands"]]}}, "Abs": {"video": "https://www.youtube.com/results?search_query=jeff+nippard+ab+exercises+ranked", "tiers": {"S+": [["Hanging Leg Raise", "Hanging_Leg_Raise"]], "S": [["Cable Crunch", "Cable_Crunch"]], "A": [["Decline Crunch", "Decline_Crunch"], ["Ab Crunch Machine", "Ab_Crunch_Machine"]], "B": [["Cross-Body Crunch", "Cross-Body_Crunch"], ["Cable Reverse Crunch", "Cable_Reverse_Crunch"]], "C": [["Crunches", "Crunches"], ["Plank", "Plank"]]}}, "Triceps": {"video": "https://www.youtube.com/watch?v=OpRMRhr0Ycc", "tiers": {"S+": [["Overhead Cable Triceps Extension (Bar)", "Cable_Rope_Overhead_Triceps_Extension"]], "S": [["Barbell Skullcrusher", "Lying_Close-Grip_Barbell_Triceps_Extension_Behind_The_Head"]], "A": [["Triceps Pressdown (Bar)", "Triceps_Pushdown"], ["Overhead Cable Triceps Extension (Rope)", "Cable_Rope_Overhead_Triceps_Extension"], ["Katana Cable Triceps Extension", "Kneeling_Cable_Triceps_Extension"], ["1 Arm Dumbbell Overhead Extension", "Standing_One-Arm_Dumbbell_Triceps_Extension"], ["Dumbbell Skullcrusher", "Lying_Triceps_Press"], ["Smith Machine JM Press", "JM_Press"], ["Cable Triceps Kickback", "One-Legged_Cable_Kickback"], ["Close-Grip Bench Press", "Close-Grip_Barbell_Bench_Press"]], "B": [["Triceps Pressdown (Rope)", "Triceps_Pushdown_-_Rope_Attachment"], ["Dumbbell French Press", "Seated_Bent-Over_Two-Arm_Dumbbell_Triceps_Extension"], ["JM Press", "JM_Press"], ["Close-Grip Dips", "Dips_-_Triceps_Version"], ["Machine Dips", "Dip_Machine"], ["Diamond Pushups", "Pushups"]], "C": [["Reverse Grip Triceps Pressdown (Bar)", "Reverse_Grip_Triceps_Pushdown"], ["Bench Dips", "Bench_Dips"], ["Close-Grip Pushups", "Push-Ups_-_Close_Triceps_Position"]], "C-": [["Dumbbell Triceps Kickback", "Tricep_Dumbbell_Kickback"]]}}, "Biceps": {"video": "https://www.youtube.com/watch?v=GNO4OtYoCYk", "tiers": {"S+": [["Face Away Bayesian Curl", "Standing_One-Arm_Cable_Curl"]], "S": [["Dumbbell Preacher Curl", "One_Arm_Dumbbell_Preacher_Curl"], ["Machine Preacher Curl", "Machine_Preacher_Curls"], ["Preacher Hammer Curl", "Preacher_Hammer_Dumbbell_Curl"]], "A": [["EZ Bar Curl", "EZ-Bar_Curl"], ["Standing Dumbbell Curl", "Dumbbell_Alternate_Bicep_Curl"], ["Incline Curl", "Alternate_Incline_Dumbbell_Curl"], ["Lying Dumbbell Curl", "Lying_Supine_Dumbbell_Curl"], ["Modified 21s", "Wide-Grip_Standing_Barbell_Curl"], ["Standing Cable Curl", "Standing_Biceps_Cable_Curl"], ["Bayesian Cable Curl Variation", "Cable_Preacher_Curl"], ["Cheat Curl", "Barbell_Curl"], ["Strict Curl", "Close-Grip_Standing_Barbell_Curl"], ["Hammer Curl", "Hammer_Curls"], ["Inverse Zottman Curl", "Zottman_Curl"]], "B": [["Barbell Curl", "Barbell_Curl"], ["Flat Bench Curl", "Lying_Supine_Dumbbell_Curl"], ["Chin-Ups", "Chin-Up"]], "C": [["Scott Curl", "Preacher_Curl"], ["Drag Curl", "Drag_Curl"], ["Spider Curl", "Spider_Curl"], ["21s", "Barbell_Curl"]]}}};
 
 const TIER_CLASS = {"S+":"tier-splus","S":"tier-s","A+":"tier-a","A":"tier-a","B+":"tier-b","B":"tier-b","C":"tier-c","C-":"tier-c","D":"tier-d","F":"tier-f","F-":"tier-f"};
 const TIER_PCT = {"S+":100,"S":92,"A+":84,"A":76,"B+":66,"B":56,"C":42,"C-":34,"D":24,"F":14,"F-":6};
@@ -313,6 +463,42 @@ let INSTRUCTIONS = {};
 fetch(INSTRUCTIONS_URL).then(r=>r.json()).then(list=>{
   list.forEach(e=>{ if(e.id && e.instructions) INSTRUCTIONS[e.id] = e.instructions; });
 }).catch(()=>{ /* modal still works, just without written steps */ });
+
+/* A handful of exercises in this guide either have no photo match in the
+   dataset, or the dataset entry exists but ships with an empty instructions
+   array. Filled in by hand so the modal never comes up empty for these. */
+const MANUAL_INSTRUCTIONS = {
+  "Bosu Ball Squat": [
+    "Stand on the center of a Bosu ball (dome side up), feet shoulder-width apart.",
+    "Brace your core and find a stable balance point before adding any load.",
+    "Bend your knees and hips to lower into a squat, keeping your chest up and weight centered over your midfoot.",
+    "Descend until your thighs are roughly parallel to the floor, or as low as you can control without wobbling.",
+    "Drive back up through your feet to standing, resisting side-to-side sway.",
+    "Keep the tempo controlled — this variation trains balance and stabilizer strength more than it trains load."
+  ],
+  "Lateral Banded Walk": [
+    "Place a mini resistance band around your legs, either just above the knees or around the ankles.",
+    "Stand with feet hip-width apart and sink into a slight quarter-squat, keeping tension on the band throughout.",
+    "Step sideways with one foot, keeping the band taut, then bring the trailing foot in only partway — don't let your feet fully touch.",
+    "Keep your hips level and core braced; avoid leaning your torso side to side to compensate.",
+    "Take 10–15 steps in one direction, then repeat leading with the other leg."
+  ],
+  "Fire Hydrants": [
+    "Start on all fours: hands stacked under shoulders, knees under hips.",
+    "Keeping your knee bent at roughly 90 degrees, lift one leg out to the side until your thigh is about parallel to the floor.",
+    "Keep your hips square to the ground — avoid rotating your torso to swing the leg higher.",
+    "Pause briefly at the top of the movement, then lower with control back to the starting position.",
+    "Complete all reps on one side before switching legs."
+  ],
+  "Kettlebell Swing": [
+    "Stand with feet shoulder-width apart, kettlebell on the floor slightly in front of you.",
+    "Hinge at the hips to grip the kettlebell, keeping your back flat and chest up.",
+    "Hike the kettlebell back between your legs, then drive your hips forward explosively to swing it up to shoulder height.",
+    "Let the kettlebell float briefly at the top — this is a hip drive, not a shoulder lift, so keep the arm relatively passive.",
+    "Let the kettlebell fall back naturally, absorbing it into the next hip hinge without pausing at the bottom.",
+    "Switch hands partway through the set if training one arm at a time."
+  ]
+};
 
 function ytSearch(name){
   return "https://www.youtube.com/results?search_query=" + encodeURIComponent(name + " exercise form");
@@ -386,7 +572,7 @@ function openModal(name, id){
     modalMedia.appendChild(f1);
   }
 
-  const steps = INSTRUCTIONS[id];
+  const steps = MANUAL_INSTRUCTIONS[name] || INSTRUCTIONS[id];
   modalSteps.innerHTML = '';
   if(steps && steps.length){
     modalSteps.hidden = false;
@@ -476,6 +662,337 @@ groupNames.forEach((g)=>{
 
 const initial = groupNames.includes(location.hash.slice(1)) ? location.hash.slice(1) : groupNames[0];
 selectGroup(initial, false);
+
+/* ============ WORKOUT ROUTINE (merged day + progression view) ============ */
+
+// Flatten DATA into a lookup: exerciseIndex["Chest"]["Bench Press"] = {id, tier}
+const exerciseIndex = {};
+groupNames.forEach(g=>{
+  exerciseIndex[g] = {};
+  Object.entries(DATA[g].tiers).forEach(([tier, exs])=>{
+    exs.forEach(([name, id])=>{ exerciseIndex[g][name] = {id, tier}; });
+  });
+});
+function lookup(group, name){
+  const hit = exerciseIndex[group] && exerciseIndex[group][name];
+  if(!hit) console.warn('Routine: no match for', group, '/', name);
+  return hit || {id:null, tier:'?'};
+}
+
+// Compound-first, isolation-to-patch-gaps, every major muscle covered
+// (including calves/abs/traps, which have no incidental overlap otherwise).
+// Days 4-6 reuse the same muscle pairings as 1-3 with different exercises.
+const SPLIT_DATA = [
+  { day:'Mon', title:'Chest & Triceps', tag:'A', exercises:[
+    {group:'Chest', name:'Bench Press', role:'compound', sets:3, reps:'6-8'},
+    {group:'Chest', name:'Incline Dumbbell Press', role:'compound', sets:3, reps:'8-10'},
+    {group:'Triceps', name:'Close-Grip Bench Press', role:'compound', sets:3, reps:'8-10'},
+    {group:'Chest', name:'Seated Cable Pec Flye', role:'isolation', sets:2, reps:'12-15'},
+    {group:'Triceps', name:'Overhead Cable Triceps Extension (Rope)', role:'isolation', sets:2, reps:'10-12'},
+    {group:'Abs', name:'Hanging Leg Raise', role:'isolation', sets:3, reps:'8-12'},
+  ]},
+  { day:'Tue', title:'Back & Biceps', tag:'A', exercises:[
+    {group:'Back', name:'Widegrip Lat Pulldown', role:'compound', sets:3, reps:'8-10'},
+    {group:'Back', name:'Chest Supported Rows', role:'compound', sets:3, reps:'8-10'},
+    {group:'Back', name:'Chin Ups', role:'compound', sets:3, reps:'6-10'},
+    {group:'Biceps', name:'Standing Cable Curl', role:'isolation', sets:3, reps:'10-12'},
+    {group:'Biceps', name:'Incline Curl', role:'isolation', sets:3, reps:'10-12'},
+    {group:'Back', name:'Barbell Shrug', role:'isolation', sets:3, reps:'10-12'},
+  ]},
+  { day:'Wed', title:'Legs & Shoulders', tag:'A', exercises:[
+    {group:'Quads', name:'Barbell Back Squat', role:'compound', sets:3, reps:'6-8'},
+    {group:'Quads', name:'Bulgarian Split Squat', role:'compound', sets:3, reps:'8-10'},
+    {group:'Shoulders', name:'Standing BB Overhead Press', role:'compound', sets:3, reps:'6-8'},
+    {group:'Hamstrings', name:'Romanian Deadlift', role:'compound', sets:3, reps:'8-10'},
+    {group:'Hamstrings', name:'Seated Leg Curl', role:'isolation', sets:3, reps:'10-12'},
+    {group:'Shoulders', name:'Cable Lat Raise', role:'isolation', sets:3, reps:'12-15'},
+    {group:'Quads', name:'Leg Extension', role:'isolation', sets:2, reps:'12-15'},
+    {group:'Calves', name:'Standing Barbell Calf Raise', role:'isolation', sets:3, reps:'12-15'},
+  ]},
+  { day:'Thu', title:'Chest & Triceps', tag:'B', exercises:[
+    {group:'Chest', name:'Incline Bench Press', role:'compound', sets:3, reps:'6-8'},
+    {group:'Chest', name:'Flat Dumbbell Press', role:'compound', sets:3, reps:'8-10'},
+    {group:'Triceps', name:'Smith Machine JM Press', role:'compound', sets:3, reps:'8-10'},
+    {group:'Chest', name:'Dumbbell Flye', role:'isolation', sets:2, reps:'12-15'},
+    {group:'Triceps', name:'Triceps Pressdown (Bar)', role:'isolation', sets:2, reps:'10-12'},
+    {group:'Abs', name:'Cable Crunch', role:'isolation', sets:3, reps:'12-15'},
+  ]},
+  { day:'Fri', title:'Back & Biceps', tag:'B', exercises:[
+    {group:'Back', name:'One Arm Lat Pulldown', role:'compound', sets:3, reps:'8-10'},
+    {group:'Back', name:'BB Row', role:'compound', sets:3, reps:'6-10'},
+    {group:'Back', name:'Wide Grip Pull Ups', role:'compound', sets:3, reps:'6-10'},
+    {group:'Biceps', name:'EZ Bar Curl', role:'isolation', sets:3, reps:'10-12'},
+    {group:'Biceps', name:'Hammer Curl', role:'isolation', sets:3, reps:'10-12'},
+    {group:'Back', name:'Dumbbell Shrug', role:'isolation', sets:3, reps:'10-12'},
+  ]},
+  { day:'Sat', title:'Legs & Shoulders', tag:'B', exercises:[
+    {group:'Quads', name:'Barbell Front Squat', role:'compound', sets:3, reps:'6-8'},
+    {group:'Quads', name:'45 Degree Leg Press', role:'compound', sets:3, reps:'10-12'},
+    {group:'Shoulders', name:'Seated DB Overhead Press', role:'compound', sets:3, reps:'8-10'},
+    {group:'Glutes', name:'Barbell Hip Thrust', role:'compound', sets:3, reps:'8-10'},
+    {group:'Hamstrings', name:'Lying Leg Curl', role:'isolation', sets:3, reps:'10-12'},
+    {group:'Shoulders', name:'Rope Face Pulls', role:'isolation', sets:2, reps:'15-20'},
+    {group:'Shoulders', name:'Lean-in DB Lat Raises', role:'isolation', sets:2, reps:'12-15'},
+    {group:'Calves', name:'Seated Calf Raise', role:'isolation', sets:3, reps:'15-20'},
+  ]},
+  { day:'Sun', title:'Rest', tag:'', exercises:[] },
+];
+
+// Load increment per progression cycle (lb). Barbell compounds move in
+// bigger jumps than dumbbell/cable/machine isolation work; leg press style
+// machines move fastest since friction/leverage make small jumps pointless.
+const BIG_JUMP = new Set(['Barbell Back Squat','Barbell Front Squat','Bench Press','Incline Bench Press',
+  'Close-Grip Bench Press','Standing BB Overhead Press','BB Row','Romanian Deadlift']);
+const MACHINE_JUMP = new Set(['45 Degree Leg Press','Barbell Hip Thrust']);
+const BODYWEIGHT = new Set(['Chin Ups','Wide Grip Pull Ups']);
+SPLIT_DATA.forEach(d=> d.exercises.forEach(ex=>{
+  if(BODYWEIGHT.has(ex.name)) ex.increment = 5;       // added weight via belt/vest once bodyweight reps cap out
+  else if(MACHINE_JUMP.has(ex.name)) ex.increment = 10;
+  else if(BIG_JUMP.has(ex.name)) ex.increment = 5;
+  else ex.increment = 2.5;                             // dumbbell / cable / smaller machine isolation
+}));
+
+/* ---- weekly volume check ---- */
+// Known secondary-muscle overlap for common compounds (credited at 0.5x per
+// standard set-counting convention). Evidence-based weekly ranges are the
+// ~10-20 sets/muscle/week window from Schoenfeld's volume meta-analyses,
+// the same range Nippard cites. Calves/abs/traps get lighter direct targets
+// since they also pick up meaningful incidental work from the compounds
+// above, which isn't credited here.
+const SECONDARY = {
+  'Bench Press':'Triceps', 'Incline Dumbbell Press':'Triceps', 'Incline Bench Press':'Triceps',
+  'Flat Dumbbell Press':'Triceps', 'Close-Grip Bench Press':'Chest', 'Smith Machine JM Press':'Chest',
+  'Chin Ups':'Biceps', 'Wide Grip Pull Ups':'Biceps',
+  'Barbell Back Squat':'Glutes', 'Bulgarian Split Squat':'Glutes', '45 Degree Leg Press':'Glutes',
+  'Standing BB Overhead Press':'Triceps', 'Seated DB Overhead Press':'Triceps',
+  'Romanian Deadlift':'Glutes', 'Barbell Hip Thrust':'Hamstrings',
+  'BB Row':'Traps', 'Chest Supported Rows':'Traps',
+};
+// Filed under "Back" in the tier list (so lookup/GIF/tier-chip work), but
+// actually trains traps — the volume tally should credit the real target
+// muscle, not the group they happen to live under for data purposes.
+const PRIMARY_OVERRIDE = { 'Barbell Shrug':'Traps', 'Dumbbell Shrug':'Traps' };
+const VOL_RANGES = {
+  Chest:[10,20], Back:[10,20], Shoulders:[10,20], Triceps:[10,20],
+  Biceps:[10,20], Quads:[10,20], Hamstrings:[10,16], Glutes:[8,16],
+  Calves:[6,16], Abs:[6,20], Traps:[6,14],
+};
+const volume = {};
+SPLIT_DATA.forEach(d=> d.exercises.forEach(ex=>{
+  const primary = PRIMARY_OVERRIDE[ex.name] || ex.group;
+  volume[primary] = (volume[primary]||0) + ex.sets;
+  const sec = SECONDARY[ex.name];
+  if(sec) volume[sec] = (volume[sec]||0) + ex.sets * 0.5;
+}));
+
+const volumeSummary = document.getElementById('volumeSummary');
+Object.keys(VOL_RANGES).forEach(muscle=>{
+  const v = Math.round((volume[muscle]||0) * 10) / 10;
+  const [lo, hi] = VOL_RANGES[muscle];
+  const status = v < lo ? 'low' : (v > hi ? 'high' : 'ok');
+  const cell = document.createElement('div');
+  cell.className = 'vol-cell vol-' + status;
+  cell.innerHTML = `<span class="vol-muscle">${muscle}</span><span class="vol-num">${v}</span><span class="vol-range">sets/wk · target ${lo}-${hi}</span>`;
+  volumeSummary.appendChild(cell);
+});
+
+/* ---- progression + deload math ---- */
+const STORAGE_KEY = 'tierguide_startWeights_v1';
+function loadWeights(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveWeight(name, val){
+  const w = loadWeights();
+  w[name] = val;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(w)); } catch(e){ /* storage unavailable, ignore */ }
+}
+
+const WEEKS = ['1','2','3','4','5','6','Deload'];
+
+function parseReps(str){
+  const [lo, hi] = str.split('-').map(Number);
+  return {lo, hi};
+}
+
+// Simulate double progression forward from week 1 to the target week.
+function computeWeek(ex, weekLabel, startWeight){
+  const { lo, hi } = parseReps(ex.reps);
+  if(weekLabel === 'Deload'){
+    const dWeight = startWeight != null ? Math.round(startWeight * 0.6) : null;
+    return { sets: Math.max(1, Math.ceil(ex.sets/2)), reps: lo, weight: dWeight, deload:true };
+  }
+  const wk = Number(weekLabel);
+  let weight = startWeight, reps = lo;
+  for(let w=2; w<=wk; w++){
+    if(reps < hi) reps++;
+    else { if(weight!=null) weight += ex.increment; reps = lo; }
+  }
+  return { sets: ex.sets, reps, weight, deload:false };
+}
+
+/* ---- combined day + week rendering ---- */
+const dayNav = document.getElementById('dayNav');
+const weekNav = document.getElementById('weekNav');
+const dayPanels = document.getElementById('dayPanels');
+let currentDay = 'Mon';
+let currentWeek = '1';
+
+function buildProgRow(idx, ex, weekLabel, weights){
+  const { group, name, role } = ex;
+  const { id, tier } = lookup(group, name);
+  const startWeight = weights[name] != null ? Number(weights[name]) : null;
+  const calc = computeWeek(ex, weekLabel, startWeight);
+
+  const row = document.createElement('div');
+  row.className = 'prog-row' + (calc.deload ? ' is-deload' : '');
+
+  const idxEl = document.createElement('div');
+  idxEl.className = 'idx';
+  idxEl.textContent = String(idx).padStart(2,'0');
+
+  const thumb = document.createElement('div');
+  thumb.className = 'ex-thumb';
+  thumb.style.cursor = 'pointer';
+  thumb.setAttribute('role','button');
+  thumb.setAttribute('tabindex','0');
+  thumb.setAttribute('aria-label', name + ' — view form guide');
+  if(id){
+    const [f0, f1] = frames(id, undefined);
+    f0.addEventListener('error', ()=>{ thumb.innerHTML=''; });
+    thumb.appendChild(f0);
+    thumb.appendChild(f1);
+  }
+  thumb.addEventListener('click', ()=> openModal(name, id));
+  thumb.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openModal(name, id); } });
+
+  const info = document.createElement('div');
+  info.className = 'ex-info';
+  info.style.flex = '1 1 140px';
+  const nameEl = document.createElement('div');
+  nameEl.className = 'ex-name';
+  nameEl.textContent = name;
+  const meta = document.createElement('div');
+  meta.className = 'ex-meta';
+  meta.innerHTML = `<span class="role-${role}">${role}</span><span>${group}</span>`;
+  info.appendChild(nameEl);
+  info.appendChild(meta);
+
+  const chip = document.createElement('div');
+  chip.className = 'tier-chip ' + (TIER_CLASS[tier]||'tier-b');
+  chip.textContent = tier;
+
+  const target = document.createElement('div');
+  target.className = 'prog-target';
+  const weightText = calc.weight != null ? `${calc.weight} lb × ` : '';
+  target.textContent = `${calc.sets} × ${weightText}${calc.reps}${calc.weight==null?' reps':''}`;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'weight-input-wrap';
+  wrap.innerHTML = `<span>start wt</span>`;
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.className = 'weight-input';
+  input.placeholder = 'lb';
+  input.min = 0;
+  input.step = 2.5;
+  if(startWeight != null) input.value = startWeight;
+  input.addEventListener('change', ()=>{
+    const v = input.value === '' ? null : Number(input.value);
+    saveWeight(name, v);
+    renderDay(currentDay, currentWeek);
+  });
+  wrap.appendChild(input);
+
+  row.appendChild(idxEl);
+  row.appendChild(thumb);
+  row.appendChild(info);
+  row.appendChild(chip);
+  row.appendChild(target);
+  row.appendChild(wrap);
+  return row;
+}
+
+function renderDay(dayLabel, weekLabel){
+  const d = SPLIT_DATA.find(x=>x.day===dayLabel);
+  if(!d) return;
+  dayPanels.innerHTML = '';
+  const weights = loadWeights();
+
+  const panel = document.createElement('div');
+  panel.className = 'day-panel active';
+
+  const head = document.createElement('div');
+  head.className = 'day-head';
+  head.innerHTML = `<h2><span class="sys">${d.day}//</span>${d.title}</h2>` +
+    (d.tag ? `<span class="day-tag">Variant ${d.tag} · Week ${weekLabel}</span>` : '');
+  panel.appendChild(head);
+
+  if(d.exercises.length === 0){
+    const rest = document.createElement('div');
+    rest.className = 'rest-note';
+    rest.textContent = 'REST DAY — recovery drives the adaptation from the other six.';
+    panel.appendChild(rest);
+  } else {
+    d.exercises.forEach((ex, i)=> panel.appendChild(buildProgRow(i+1, ex, weekLabel, weights)));
+  }
+  dayPanels.appendChild(panel);
+}
+
+SPLIT_DATA.forEach((d)=>{
+  const btn = document.createElement('button');
+  btn.textContent = d.day;
+  btn.dataset.d = d.day;
+  btn.setAttribute('role','tab');
+  btn.setAttribute('aria-selected', d.day==='Mon' ? 'true':'false');
+  btn.addEventListener('click', ()=>{
+    currentDay = d.day;
+    document.querySelectorAll('#dayNav button').forEach(b=>b.setAttribute('aria-selected', b.dataset.d===d.day ? 'true':'false'));
+    renderDay(currentDay, currentWeek);
+    history.replaceState(null,'','#routine-'+currentDay);
+    btn.scrollIntoView({behavior: reduceMotion?'auto':'smooth', inline:'center', block:'nearest'});
+  });
+  dayNav.appendChild(btn);
+});
+
+WEEKS.forEach((w)=>{
+  const btn = document.createElement('button');
+  btn.textContent = w === 'Deload' ? 'Deload' : 'Wk ' + w;
+  btn.dataset.w = w;
+  btn.setAttribute('role','tab');
+  btn.setAttribute('aria-selected', w==='1' ? 'true':'false');
+  if(w === 'Deload') btn.classList.add('deload');
+  btn.addEventListener('click', ()=>{
+    currentWeek = w;
+    document.querySelectorAll('#weekNav button').forEach(b=>b.setAttribute('aria-selected', b.dataset.w===w ? 'true':'false'));
+    renderDay(currentDay, currentWeek);
+  });
+  weekNav.appendChild(btn);
+});
+
+const initialDay = SPLIT_DATA.some(d=>d.day===location.hash.slice(8)) ? location.hash.slice(8) : 'Mon';
+currentDay = initialDay;
+document.querySelectorAll('#dayNav button').forEach(b=>b.setAttribute('aria-selected', b.dataset.d===initialDay ? 'true':'false'));
+renderDay(currentDay, currentWeek);
+
+/* ---- mode switch ---- */
+const modeMuscleBtn = document.getElementById('mode-muscle');
+const modeRoutineBtn = document.getElementById('mode-routine');
+const muscleView = document.getElementById('muscleView');
+const routineView = document.getElementById('routineView');
+
+function setMode(mode){
+  const isRoutine = mode === 'routine';
+  modeMuscleBtn.classList.toggle('active', !isRoutine);
+  modeRoutineBtn.classList.toggle('active', isRoutine);
+  modeMuscleBtn.setAttribute('aria-selected', String(!isRoutine));
+  modeRoutineBtn.setAttribute('aria-selected', String(isRoutine));
+  muscleView.hidden = isRoutine;
+  routineView.hidden = !isRoutine;
+}
+modeMuscleBtn.addEventListener('click', ()=> setMode('muscle'));
+modeRoutineBtn.addEventListener('click', ()=> setMode('routine'));
+if(location.hash.startsWith('#routine')) setMode('routine');
 </script>
 </body>
 </html>
