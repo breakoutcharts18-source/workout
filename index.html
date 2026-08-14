@@ -188,6 +188,17 @@
   }
   .exercise-row .ex-meta .role-compound{color:var(--blue);}
   .exercise-row .ex-meta .role-isolation{color:var(--amber);}
+  .exercise-row .ex-meta .role-primary{color:var(--splus); font-weight:700;}
+  .exercise-row .ex-meta .role-secondary{color:var(--blue);}
+  .exercise-row .ex-meta .role-tertiary{color:var(--amber);}
+
+  #blockNav button.b2{border-color:var(--splus);}
+  #blockNav button.b2[aria-selected="true"]{background:var(--splus); color:#fff; border-color:var(--splus);}
+
+  .wave-badge{
+    font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--ink-faint);
+    text-transform:uppercase; letter-spacing:.04em; margin-left:6px;
+  }
   .exercise-row .tier-chip{
     flex:0 0 auto; font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:11.5px;
     padding:4px 8px; border-radius:2px; min-width:28px; text-align:center;
@@ -425,6 +436,7 @@
       <strong>6-week block, double progression, then deload.</strong> Add a rep to your top set each week you're in the range; when you hit the top, add weight and drop back to the bottom. Week 7 halves the sets and drops the load — leave 3–4 reps in the tank on everything. Enter your current working weight once per exercise below; every week recalculates from that automatically.
     </div>
     <div id="volumeSummary" class="volume-summary"></div>
+    <nav class="groups" id="blockNav" role="tablist" aria-label="Training block"></nav>
     <nav class="groups" id="weekNav" role="tablist" aria-label="Training week"></nav>
     <nav class="groups" id="dayNav" role="tablist" aria-label="Training days"></nav>
     <div id="dayPanels"></div>
@@ -738,19 +750,88 @@ const SPLIT_DATA = [
   { day:'Sun', title:'Rest', tag:'', exercises:[] },
 ];
 
+// ---- Block 2: post-deload, higher-effort phase ----
+// Same muscle pairings and frequency as Block 1, but different exercises
+// (fresh stimulus) and a primary/secondary/tertiary classification instead
+// of a flat compound/isolation split — mirrors the distinction serious
+// hypertrophy programs make: the day's main heavy lift gets zero technical
+// breakdown tolerance and true near-failure effort, while assistance work
+// has more room for controlled momentum. Primary lifts use a wave-loading
+// pattern (rep target moves up/down week to week) instead of straight
+// double progression, so effort stays high without every week just being
+// "add one more rep."
+const BLOCK2_DATA = [
+  { day:'Mon', title:'Chest & Triceps', tag:'A', exercises:[
+    {group:'Chest', name:'Smith Machine Bench Press', role:'primary', sets:3, reps:'4-6'},
+    {group:'Chest', name:'Dips', role:'secondary', sets:3, reps:'8-10'},
+    {group:'Triceps', name:'Close-Grip Bench Press', role:'secondary', sets:3, reps:'8-10'},
+    {group:'Chest', name:'Cable Crossovers', role:'tertiary', sets:2, reps:'12-15'},
+    {group:'Triceps', name:'Triceps Pressdown (Rope)', role:'tertiary', sets:2, reps:'12-15'},
+    {group:'Abs', name:'Cable Crunch', role:'tertiary', sets:3, reps:'12-15'},
+  ]},
+  { day:'Tue', title:'Back & Biceps', tag:'A', exercises:[
+    {group:'Back', name:'Deficit Pendlay Row', role:'primary', sets:3, reps:'4-6'},
+    {group:'Back', name:'One Arm Lat Pulldown', role:'secondary', sets:3, reps:'8-10'},
+    {group:'Back', name:'Wide Grip Pull Ups', role:'secondary', sets:3, reps:'6-10'},
+    {group:'Biceps', name:'Hammer Curl', role:'tertiary', sets:2, reps:'10-12'},
+    {group:'Biceps', name:'EZ Bar Curl', role:'tertiary', sets:2, reps:'10-12'},
+    {group:'Back', name:'Dumbbell Shrug', role:'tertiary', sets:2, reps:'10-12'},
+  ]},
+  { day:'Wed', title:'Legs & Shoulders', tag:'A', exercises:[
+    {group:'Quads', name:'Barbell Front Squat', role:'primary', sets:3, reps:'4-6'},
+    {group:'Quads', name:'Bulgarian Split Squat', role:'secondary', sets:3, reps:'8-10'},
+    {group:'Shoulders', name:'Seated DB Overhead Press', role:'secondary', sets:3, reps:'8-10'},
+    {group:'Quads', name:'Leg Extension', role:'tertiary', sets:2, reps:'12-15'},
+    {group:'Shoulders', name:'Cable Lat Raise', role:'tertiary', sets:2, reps:'12-15'},
+    {group:'Hamstrings', name:'Lying Leg Curl', role:'tertiary', sets:3, reps:'10-12'},
+    {group:'Calves', name:'Standing Barbell Calf Raise', role:'tertiary', sets:3, reps:'12-15'},
+  ]},
+  { day:'Thu', title:'Chest & Triceps', tag:'B', exercises:[
+    {group:'Chest', name:'Incline Bench Press', role:'primary', sets:3, reps:'4-6'},
+    {group:'Triceps', name:'Close-Grip Dips', role:'secondary', sets:3, reps:'8-10'},
+    {group:'Chest', name:'Flat Dumbbell Press', role:'secondary', sets:3, reps:'8-10'},
+    {group:'Chest', name:'Dumbbell Flye', role:'tertiary', sets:2, reps:'12-15'},
+    {group:'Triceps', name:'Overhead Cable Triceps Extension (Rope)', role:'tertiary', sets:2, reps:'10-12'},
+    {group:'Abs', name:'Hanging Leg Raise', role:'tertiary', sets:3, reps:'8-12'},
+  ]},
+  { day:'Fri', title:'Back & Biceps', tag:'B', exercises:[
+    {group:'Back', name:'BB Row', role:'primary', sets:3, reps:'4-6'},
+    {group:'Back', name:'Widegrip Lat Pulldown', role:'secondary', sets:3, reps:'8-10'},
+    {group:'Back', name:'Chin Ups', role:'secondary', sets:3, reps:'6-10'},
+    {group:'Biceps', name:'Standing Cable Curl', role:'tertiary', sets:2, reps:'10-12'},
+    {group:'Biceps', name:'Incline Curl', role:'tertiary', sets:2, reps:'10-12'},
+    {group:'Back', name:'Barbell Shrug', role:'tertiary', sets:2, reps:'10-12'},
+  ]},
+  { day:'Sat', title:'Legs & Shoulders', tag:'B', exercises:[
+    {group:'Quads', name:'Barbell Back Squat', role:'primary', sets:3, reps:'4-6'},
+    {group:'Quads', name:'45 Degree Leg Press', role:'secondary', sets:3, reps:'10-12'},
+    {group:'Shoulders', name:'Standing BB Overhead Press', role:'secondary', sets:3, reps:'6-8'},
+    {group:'Hamstrings', name:'Romanian Deadlift', role:'secondary', sets:4, reps:'8-10'},
+    {group:'Hamstrings', name:'Seated Leg Curl', role:'tertiary', sets:3, reps:'10-12'},
+    {group:'Shoulders', name:'Rope Face Pulls', role:'tertiary', sets:2, reps:'15-20'},
+    {group:'Calves', name:'Seated Calf Raise', role:'tertiary', sets:3, reps:'15-20'},
+  ]},
+  { day:'Sun', title:'Rest', tag:'', exercises:[] },
+];
+
 // Load increment per progression cycle (lb). Barbell compounds move in
 // bigger jumps than dumbbell/cable/machine isolation work; leg press style
 // machines move fastest since friction/leverage make small jumps pointless.
 const BIG_JUMP = new Set(['Barbell Back Squat','Barbell Front Squat','Bench Press','Incline Bench Press',
-  'Close-Grip Bench Press','Standing BB Overhead Press','BB Row','Romanian Deadlift']);
+  'Close-Grip Bench Press','Standing BB Overhead Press','BB Row','Romanian Deadlift',
+  'Deficit Pendlay Row','Smith Machine Bench Press']);
 const MACHINE_JUMP = new Set(['45 Degree Leg Press','Barbell Hip Thrust']);
 const BODYWEIGHT = new Set(['Chin Ups','Wide Grip Pull Ups']);
-SPLIT_DATA.forEach(d=> d.exercises.forEach(ex=>{
-  if(BODYWEIGHT.has(ex.name)) ex.increment = 5;       // added weight via belt/vest once bodyweight reps cap out
-  else if(MACHINE_JUMP.has(ex.name)) ex.increment = 10;
-  else if(BIG_JUMP.has(ex.name)) ex.increment = 5;
-  else ex.increment = 2.5;                             // dumbbell / cable / smaller machine isolation
-}));
+function assignIncrements(data){
+  data.forEach(d=> d.exercises.forEach(ex=>{
+    if(BODYWEIGHT.has(ex.name)) ex.increment = 5;
+    else if(MACHINE_JUMP.has(ex.name)) ex.increment = 10;
+    else if(BIG_JUMP.has(ex.name)) ex.increment = 5;
+    else ex.increment = 2.5;
+  }));
+}
+assignIncrements(SPLIT_DATA);
+assignIncrements(BLOCK2_DATA);
 
 /* ---- weekly volume check ---- */
 // Known secondary-muscle overlap for common compounds (credited at 0.5x per
@@ -762,11 +843,14 @@ SPLIT_DATA.forEach(d=> d.exercises.forEach(ex=>{
 const SECONDARY = {
   'Bench Press':'Triceps', 'Incline Dumbbell Press':'Triceps', 'Incline Bench Press':'Triceps',
   'Flat Dumbbell Press':'Triceps', 'Close-Grip Bench Press':'Chest', 'Smith Machine JM Press':'Chest',
+  'Smith Machine Bench Press':'Triceps', 'Close-Grip Dips':'Chest',
   'Chin Ups':'Biceps', 'Wide Grip Pull Ups':'Biceps',
   'Barbell Back Squat':'Glutes', 'Bulgarian Split Squat':'Glutes', '45 Degree Leg Press':'Glutes',
+  'Barbell Front Squat':'Glutes',
   'Standing BB Overhead Press':'Triceps', 'Seated DB Overhead Press':'Triceps',
   'Romanian Deadlift':'Glutes', 'Barbell Hip Thrust':'Hamstrings',
-  'BB Row':'Traps', 'Chest Supported Rows':'Traps',
+  'BB Row':'Traps', 'Chest Supported Rows':'Traps', 'Deficit Pendlay Row':'Traps',
+  'One Arm Lat Pulldown':'Biceps', 'Widegrip Lat Pulldown':'Biceps',
 };
 // Filed under "Back" in the tier list (so lookup/GIF/tier-chip work), but
 // actually trains traps — the volume tally should credit the real target
@@ -777,35 +861,45 @@ const VOL_RANGES = {
   Biceps:[10,20], Quads:[10,20], Hamstrings:[10,16], Glutes:[8,16],
   Calves:[6,16], Abs:[6,20], Traps:[6,14],
 };
-const volume = {};
-SPLIT_DATA.forEach(d=> d.exercises.forEach(ex=>{
-  const primary = PRIMARY_OVERRIDE[ex.name] || ex.group;
-  volume[primary] = (volume[primary]||0) + ex.sets;
-  const sec = SECONDARY[ex.name];
-  if(sec) volume[sec] = (volume[sec]||0) + ex.sets * 0.5;
-}));
-
+function computeVolume(data){
+  const vol = {};
+  data.forEach(d=> d.exercises.forEach(ex=>{
+    const primary = PRIMARY_OVERRIDE[ex.name] || ex.group;
+    vol[primary] = (vol[primary]||0) + ex.sets;
+    const sec = SECONDARY[ex.name];
+    if(sec) vol[sec] = (vol[sec]||0) + ex.sets * 0.5;
+  }));
+  return vol;
+}
 const volumeSummary = document.getElementById('volumeSummary');
-Object.keys(VOL_RANGES).forEach(muscle=>{
-  const v = Math.round((volume[muscle]||0) * 10) / 10;
-  const [lo, hi] = VOL_RANGES[muscle];
-  const status = v < lo ? 'low' : (v > hi ? 'high' : 'ok');
-  const cell = document.createElement('div');
-  cell.className = 'vol-cell vol-' + status;
-  cell.innerHTML = `<span class="vol-muscle">${muscle}</span><span class="vol-num">${v}</span><span class="vol-range">sets/wk · target ${lo}-${hi}</span>`;
-  volumeSummary.appendChild(cell);
-});
+function renderVolume(data){
+  volumeSummary.innerHTML = '';
+  const vol = computeVolume(data);
+  Object.keys(VOL_RANGES).forEach(muscle=>{
+    const v = Math.round((vol[muscle]||0) * 10) / 10;
+    const [lo, hi] = VOL_RANGES[muscle];
+    const status = v < lo ? 'low' : (v > hi ? 'high' : 'ok');
+    const cell = document.createElement('div');
+    cell.className = 'vol-cell vol-' + status;
+    cell.innerHTML = `<span class="vol-muscle">${muscle}</span><span class="vol-num">${v}</span><span class="vol-range">sets/wk · target ${lo}-${hi}</span>`;
+    volumeSummary.appendChild(cell);
+  });
+}
 
 /* ---- progression + deload math ---- */
-const STORAGE_KEY = 'tierguide_startWeights_v1';
-function loadWeights(){
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-  catch(e){ return {}; }
+const STORAGE_KEY = 'tierguide_startWeights_v2'; // v2: now keyed per block
+function loadWeights(block){
+  try {
+    const all = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    return all[block] || {};
+  } catch(e){ return {}; }
 }
-function saveWeight(name, val){
-  const w = loadWeights();
-  w[name] = val;
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(w)); } catch(e){ /* storage unavailable, ignore */ }
+function saveWeight(block, name, val){
+  let all = {};
+  try { all = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e){ /* start fresh */ }
+  all[block] = all[block] || {};
+  all[block][name] = val;
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(all)); } catch(e){ /* storage unavailable, ignore */ }
 }
 
 const WEEKS = ['1','2','3','4','5','6','Deload'];
@@ -815,7 +909,8 @@ function parseReps(str){
   return {lo, hi};
 }
 
-// Simulate double progression forward from week 1 to the target week.
+// Block 1: simple double progression — add a rep each week until the top
+// of the range, then add weight and reset to the bottom.
 function computeWeek(ex, weekLabel, startWeight){
   const { lo, hi } = parseReps(ex.reps);
   if(weekLabel === 'Deload'){
@@ -831,18 +926,48 @@ function computeWeek(ex, weekLabel, startWeight){
   return { sets: ex.sets, reps, weight, deload:false };
 }
 
-/* ---- combined day + week rendering ---- */
+// Block 2, primary lifts only: wave/undulating loading instead of a
+// straight climb — reps and relative load move up and down week to week
+// (heavy-light-heavier pattern) so effort stays high without every week
+// simply being "one more rep than last time."
+const WAVE = {
+  '1': {repsFrac: 0.5, mult: 1.00},
+  '2': {repsFrac: 1.0, mult: 0.95},
+  '3': {repsFrac: 0.0, mult: 1.08},
+  '4': {repsFrac: 0.5, mult: 1.03},
+  '5': {repsFrac: -0.5, mult: 1.12},
+  '6': {repsFrac: -1.0, mult: 1.15},
+};
+function computePrimaryWeek(ex, weekLabel, startWeight){
+  const { lo, hi } = parseReps(ex.reps);
+  const mid = (lo + hi) / 2;
+  if(weekLabel === 'Deload'){
+    const dWeight = startWeight != null ? Math.round(startWeight * 0.65) : null;
+    return { sets: Math.max(1, Math.ceil(ex.sets/2)), reps: lo, weight: dWeight, deload:true };
+  }
+  const w = WAVE[weekLabel] || WAVE['1'];
+  const reps = Math.max(1, Math.round(mid + w.repsFrac));
+  const weight = startWeight != null ? Math.round(startWeight * w.mult) : null;
+  return { sets: ex.sets, reps, weight, deload:false, wave:true };
+}
+
+/* ---- combined day + week + block rendering ---- */
+const blockNav = document.getElementById('blockNav');
 const dayNav = document.getElementById('dayNav');
 const weekNav = document.getElementById('weekNav');
 const dayPanels = document.getElementById('dayPanels');
 let currentDay = 'Mon';
 let currentWeek = '1';
+let currentBlock = '1';
+
+function activeData(){ return currentBlock === '2' ? BLOCK2_DATA : SPLIT_DATA; }
 
 function buildProgRow(idx, ex, weekLabel, weights){
   const { group, name, role } = ex;
   const { id, tier } = lookup(group, name);
   const startWeight = weights[name] != null ? Number(weights[name]) : null;
-  const calc = computeWeek(ex, weekLabel, startWeight);
+  const isPrimary = role === 'primary';
+  const calc = isPrimary ? computePrimaryWeek(ex, weekLabel, startWeight) : computeWeek(ex, weekLabel, startWeight);
 
   const row = document.createElement('div');
   row.className = 'prog-row' + (calc.deload ? ' is-deload' : '');
@@ -874,7 +999,9 @@ function buildProgRow(idx, ex, weekLabel, weights){
   nameEl.textContent = name;
   const meta = document.createElement('div');
   meta.className = 'ex-meta';
-  meta.innerHTML = `<span class="role-${role}">${role}</span><span>${group}</span>`;
+  const roleLabel = role.charAt(0).toUpperCase()+role.slice(1);
+  const effortNote = role !== 'primary' && currentBlock === '2' ? '<span class="wave-badge">RPE 8-9</span>' : (isPrimary ? '<span class="wave-badge">wave</span>' : '');
+  meta.innerHTML = `<span class="role-${role}">${roleLabel}</span><span>${group}</span>${effortNote}`;
   info.appendChild(nameEl);
   info.appendChild(meta);
 
@@ -899,7 +1026,7 @@ function buildProgRow(idx, ex, weekLabel, weights){
   if(startWeight != null) input.value = startWeight;
   input.addEventListener('change', ()=>{
     const v = input.value === '' ? null : Number(input.value);
-    saveWeight(name, v);
+    saveWeight(currentBlock, name, v);
     renderDay(currentDay, currentWeek);
   });
   wrap.appendChild(input);
@@ -914,10 +1041,11 @@ function buildProgRow(idx, ex, weekLabel, weights){
 }
 
 function renderDay(dayLabel, weekLabel){
-  const d = SPLIT_DATA.find(x=>x.day===dayLabel);
+  const data = activeData();
+  const d = data.find(x=>x.day===dayLabel);
   if(!d) return;
   dayPanels.innerHTML = '';
-  const weights = loadWeights();
+  const weights = loadWeights(currentBlock);
 
   const panel = document.createElement('div');
   panel.className = 'day-panel active';
@@ -939,20 +1067,41 @@ function renderDay(dayLabel, weekLabel){
   dayPanels.appendChild(panel);
 }
 
-SPLIT_DATA.forEach((d)=>{
-  const btn = document.createElement('button');
-  btn.textContent = d.day;
-  btn.dataset.d = d.day;
-  btn.setAttribute('role','tab');
-  btn.setAttribute('aria-selected', d.day==='Mon' ? 'true':'false');
-  btn.addEventListener('click', ()=>{
-    currentDay = d.day;
-    document.querySelectorAll('#dayNav button').forEach(b=>b.setAttribute('aria-selected', b.dataset.d===d.day ? 'true':'false'));
-    renderDay(currentDay, currentWeek);
-    history.replaceState(null,'','#routine-'+currentDay);
-    btn.scrollIntoView({behavior: reduceMotion?'auto':'smooth', inline:'center', block:'nearest'});
+function rebuildDayNav(){
+  dayNav.innerHTML = '';
+  activeData().forEach((d)=>{
+    const btn = document.createElement('button');
+    btn.textContent = d.day;
+    btn.dataset.d = d.day;
+    btn.setAttribute('role','tab');
+    btn.setAttribute('aria-selected', d.day===currentDay ? 'true':'false');
+    btn.addEventListener('click', ()=>{
+      currentDay = d.day;
+      document.querySelectorAll('#dayNav button').forEach(b=>b.setAttribute('aria-selected', b.dataset.d===d.day ? 'true':'false'));
+      renderDay(currentDay, currentWeek);
+      history.replaceState(null,'','#routine-b'+currentBlock+'-'+currentDay);
+      btn.scrollIntoView({behavior: reduceMotion?'auto':'smooth', inline:'center', block:'nearest'});
+    });
+    dayNav.appendChild(btn);
   });
-  dayNav.appendChild(btn);
+}
+
+[{key:'1', label:'Block 1', cls:''}, {key:'2', label:'Block 2', cls:'b2'}].forEach(b=>{
+  const btn = document.createElement('button');
+  btn.textContent = b.label;
+  btn.dataset.b = b.key;
+  if(b.cls) btn.classList.add(b.cls);
+  btn.setAttribute('role','tab');
+  btn.setAttribute('aria-selected', b.key==='1' ? 'true':'false');
+  btn.addEventListener('click', ()=>{
+    currentBlock = b.key;
+    document.querySelectorAll('#blockNav button').forEach(x=>x.setAttribute('aria-selected', x.dataset.b===b.key ? 'true':'false'));
+    if(!activeData().some(d=>d.day===currentDay)) currentDay = 'Mon';
+    rebuildDayNav();
+    renderVolume(activeData());
+    renderDay(currentDay, currentWeek);
+  });
+  blockNav.appendChild(btn);
 });
 
 WEEKS.forEach((w)=>{
@@ -970,9 +1119,8 @@ WEEKS.forEach((w)=>{
   weekNav.appendChild(btn);
 });
 
-const initialDay = SPLIT_DATA.some(d=>d.day===location.hash.slice(8)) ? location.hash.slice(8) : 'Mon';
-currentDay = initialDay;
-document.querySelectorAll('#dayNav button').forEach(b=>b.setAttribute('aria-selected', b.dataset.d===initialDay ? 'true':'false'));
+rebuildDayNav();
+renderVolume(activeData());
 renderDay(currentDay, currentWeek);
 
 /* ---- mode switch ---- */
